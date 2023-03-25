@@ -81,7 +81,7 @@ public class Bridge : MonoBehaviour
         string htmlJson = JsonConvert.SerializeObject(html_Values);
         string xValue = JsonConvert.DeserializeObject(htmlJson).ToString();
 
-        Debug.Log(xValue);
+        // Debug.Log(xValue);
 
 
 #if UNITY_WEBGL && !UNITY_EDITOR
