@@ -57,6 +57,7 @@ public class SlideActivityData{
     public int tries = 0;
     public int failures = 0;
     public int score = 0;
+    public string answer;
 
     public SlideActivityData(int qNo){
         this.questionNo = qNo;
