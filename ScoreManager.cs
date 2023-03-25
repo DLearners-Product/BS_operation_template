@@ -28,13 +28,16 @@ public class ScoreManager : MonoBehaviour
     }
 
     public void InstantiateScore(int arrSize){
-        Debug.Log($"came to InstantiateScore "+arrSize);
-        Debug.Log($"Level No : "+Main_Blended.OBJ_main_blended.levelno);
-        Debug.Log(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities);
+        // Debug.Log($"came to InstantiateScore "+arrSize);
+        // Debug.Log($"Level No : "+Main_Blended.OBJ_main_blended.levelno);
+        // Debug.Log(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities);
 
         if(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities == null || lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities.Length <= 0){
             Debug.Log($"Slide activity initialized");
             lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities = new SlideActivityData[arrSize];
+            for(int i=0; i<arrSize; i++){
+                THI_InitialiseGameActivity(i);
+            }
         }else{
             Debug.Log($"Slide activity not initialized");
         }
@@ -91,10 +94,13 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    public void RightAnswer(int questionIndex, int scorevalue = 1, string questionValue=null){
+    public void RightAnswer(int questionIndex, int scorevalue = 1, string questionValue=null, string answerValue=null){
         THI_InitialiseGameActivity(questionIndex);
         if(questionValue != null)
             lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].question = questionValue;
+        if(answerValue != null)
+            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answer = answerValue;
+
         lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].tries++;
         lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].score += scorevalue;
     }
