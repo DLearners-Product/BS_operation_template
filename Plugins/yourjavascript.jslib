@@ -20,14 +20,14 @@ mergeInto(LibraryManager.library, {
 
     PassActivityScoreData : function(scoreData){
         SetActivityScoreData(UTF8ToString(scoreData));
-    }
+    },
 
     PassBlendedContentDataToDB : function(blendedContentData){
         send_blended_data(blendedContentData);
-    }
+    },
 
-    MarkActivityCompleted : (activityScoreData) => {
-        blendedActivityIsCompleted(activityScoreData);
+    MarkActivityCompleted : function(activityScoreData){
+        blendedActivityIsCompleted(UTF8ToString(activityScoreData));
     }
 
 });
