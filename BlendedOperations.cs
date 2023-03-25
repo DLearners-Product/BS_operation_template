@@ -5,7 +5,7 @@ using SimpleJSON;
 using System;
 using TMPro;
 using UnityEngine.UI;
-using UnityEditor.Events;
+// using UnityEditor.Events;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
@@ -151,19 +151,17 @@ public class BlendedOperations : MonoBehaviour
             }
 
             Button textBtn;
-            if(textComponentData[i].textObject.TryGetComponent<Button>(out textBtn) && CheckFunctionInPersistentListener(textBtn, nameof(SendDataToSylabify))) continue;
 
+            if(textComponentData[i].textObject.TryGetComponent<Button>(out textBtn) && textComponentData[i].textObject.GetComponent<SyllabifyListenerScript>() != null) continue;
 
-            UnityAction<string> action = new UnityAction<string>(SendDataToSylabify);
-
-            if(textBtn == null)
+            if(textBtn == null){
                 textComponentData[i].textObject.AddComponent<Button>();
-
-            UnityEventTools.AddStringPersistentListener(textComponentData[i].textObject.GetComponent<Button>().onClick, action, textCompValue);
+                textComponentData[i].textObject.AddComponent<SyllabifyListenerScript>();
+            }
         }
     }
 
-    void SendDataToSylabify(string dataToSyllabify){
+    public void SendDataToSylabify(string dataToSyllabify){
         // string dataToSyllabify = EventSystem.current.currentSelectedGameObject.gameObject.name;
         Debug.Log("SendDataToSylabify ...");
         Debug.Log(dataToSyllabify);
