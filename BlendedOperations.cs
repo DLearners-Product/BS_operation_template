@@ -145,6 +145,11 @@ public class BlendedOperations : MonoBehaviour
             textField = textComponentData[i].textObject;
             string textCompValue = (textField.GetComponent<Text>()) ? textField.GetComponent<Text>().text : textField.GetComponent<TMP_Text>().text;
 
+            // Debug.Log($"{textField.GetComponent<Text>().text} - {textField.GetComponent<Text>().raycastTarget}", textField);
+            if(textField.GetComponent<Text>() && !textField.GetComponent<Text>().raycastTarget){
+                textField.GetComponent<Text>().raycastTarget = true;
+            }
+
             Button textBtn;
             if(textComponentData[i].textObject.TryGetComponent<Button>(out textBtn) && CheckFunctionInPersistentListener(textBtn, nameof(SendDataToSylabify))) continue;
 
