@@ -12,10 +12,10 @@ public class ScoreManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        InitializeLessonActivityData(MainBlendedData.instance.slideDatas.Count);
     }
 
     private void Start() {
-        InitializeLessonActivityData(MainBlendedData.instance.slideDatas.Count);
     }
 
     public void InitializeLessonActivityData(int arrLength){
