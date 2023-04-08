@@ -82,3 +82,26 @@ public class SlideActivityData{
 public class BlendedSlideActivityData{
     public SlideActivityData[] slideActivities;
 }
+
+public enum FileType{
+    None,
+    Text,
+    Image,
+    Audio
+}
+
+public enum QuestionType{
+    None,
+    Static,
+    Dynamic
+}
+
+#region GROUP_IMAGE
+[Serializable]
+public class Component{
+    public string text;
+    public Sprite image;
+    public AudioClip audioClip;
+}
+
+#endregion
