@@ -1,39 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 [ExecuteInEditMode]
 public class ActivityContentManager : MonoBehaviour
 {
-    [SerializeField] int questionCount;
-    [SerializeField] private QuestionType questionType;
-    public ActivityQAManager activityQAData;
+    public QuestionType questionType;
+    public int questionCount, o_questionCount;
+    // public QA[] qa;
+    // public Component[] option;
+    public StaticQA staticQA = new StaticQA();
+    public DynamicQA dynamicQA = new DynamicQA();
+    public ActivityQA defaultQA = null;
 
     private void OnValidate()
     {
-        Debug.Log($"Came here");
-        UpdateInspector();
-    }
+        Debug.Log($"Question Type : {questionType}");
 
-    void UpdateInspector(){
-        switch(questionType){
-            case QuestionType.Static:
-                Debug.Log($"Question type is static "+(activityQAData.GetType() == typeof(StaticQA)));
-                Debug.Log($"Question type is static "+(activityQAData.GetType() == typeof(DynamicQA)));
-                Debug.Log($"Question type is static "+(activityQAData == null));
+        Debug.Log($"Static Len : {staticQA.options.Length}");
 
-                activityQAData = new StaticQA(questionCount);
-                break;
-            
-            case QuestionType.Dynamic:
-                Debug.Log($"Question type is dynamic "+(activityQAData.GetType() == typeof(DynamicQA)));
-                activityQAData = new DynamicQA(questionCount);
-                break;
-
-            default:
-                Debug.Log($"Question type is none");
-                activityQAData = null;
-                break;
-        }
+        Debug.Log($"Dynamic Len : {dynamicQA.questions.Length}");
     }
 }

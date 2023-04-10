@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using SimpleJSON;
 
@@ -97,11 +98,31 @@ public enum QuestionType{
 }
 
 #region GROUP_IMAGE
+
 [Serializable]
 public class Component{
     public string text;
-    public Sprite image;
+    public GameObject image;
     public AudioClip audioClip;
+    public int width, height;
+    Sprite sprite;
+
+    public void UpdateDimension(){
+        if(image == null) return;
+
+        SpriteRenderer _sr;
+        Image _image;
+        if(image.TryGetComponent<SpriteRenderer>(out _sr)){
+            sprite = _sr.sprite;
+        }else if(image.TryGetComponent<Image>(out _image)){
+            sprite = _image.sprite;
+        }
+
+        if(sprite != null){
+            width = (int)(sprite.rect.width/2);
+            height = (int)(sprite.rect.height/2);
+        }
+    }
 }
 
 #endregion
