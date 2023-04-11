@@ -18,4 +18,10 @@ public class ActivityContentManager : MonoBehaviour
     {
 
     }
+
+    public void UpdateAsset(){
+        foreach(var activityContent in activityContents){
+            activityContent.UpdateAsset();
+        }
+    }
 }
