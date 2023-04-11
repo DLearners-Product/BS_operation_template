@@ -123,7 +123,7 @@ public class StaticQA : ActivityQA{
 [Serializable]
 public class ActivityContent{
     public QuestionType questionType;
-    public int questionCount, o_questionCount;
+    public int slideNo;
     public StaticQA staticQA = new StaticQA();
     public DynamicQA dynamicQA = new DynamicQA();
     public ActivityQA defaultQA = null;
