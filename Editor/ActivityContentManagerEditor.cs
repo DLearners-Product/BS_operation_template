@@ -22,9 +22,9 @@ public class ActivityContentManagerEditor : Editor
     {
         contentManager = (ActivityContentManager)target;
         
-        activityContents = contentManager.activityContents;
-
         getTarget = new SerializedObject(contentManager);
+
+        // activityContents = contentManager.activityContents;
 
         _activityContents = getTarget.FindProperty("activityContents");
     }
@@ -33,55 +33,71 @@ public class ActivityContentManagerEditor : Editor
     {
         getTarget.Update();
 
-        using(new EditorGUILayout.VerticalScope("HelpBox")){
-            arrSize = _activityContents.arraySize;
-            arrSize = EditorGUILayout.IntField ("List Size", arrSize);
+        arrSize = _activityContents.arraySize;
+        arrSize = EditorGUILayout.IntField ("List Size", arrSize);
 
-            Debug.Log($"Array Size : {arrSize}");
-            if(arrSize != _activityContents.arraySize){
-                while(arrSize > _activityContents.arraySize){
-                    _activityContents.InsertArrayElementAtIndex(_activityContents.arraySize);
-                }
-
-                while(arrSize < _activityContents.arraySize){
-                    _activityContents.DeleteArrayElementAtIndex(_activityContents.arraySize - 1);
-                }
+        // Debug.Log($"Array Size : {arrSize}");
+        if(arrSize != _activityContents.arraySize){
+            while(arrSize > _activityContents.arraySize){
+                _activityContents.InsertArrayElementAtIndex(_activityContents.arraySize);
             }
 
-            // for(int i=0; i<contentManager.activityContents.Length; i++){
+            while(arrSize < _activityContents.arraySize){
+                _activityContents.DeleteArrayElementAtIndex(_activityContents.arraySize - 1);
+            }
+        }
 
-            //     SerializedProperty activityContent = _activityContents.GetArrayElementAtIndex(i);
+        for(int i=0; i<_activityContents.arraySize; i++){
 
-            //     SerializedProperty questionType = activityContent.FindPropertyRelative("questionType");
+            EditorGUILayout.Space();
 
-            //     activity.questionType = (QuestionType)EditorGUILayout.EnumPopup("Question Type", activityContent.questionType);
+            EditorGUILayout.LabelField($"Activity {(i + 1)}");
 
-            //     EditorGUILayout.Space();
+            SerializedProperty activityContent = _activityContents.GetArrayElementAtIndex(i);
 
-                
-            //     // switch (activityContent.questionType)
-            //     // {
-            //     //     case QuestionType.Static:
+            SerializedProperty questionType = activityContent.FindPropertyRelative("questionType");
 
-            //     //         MethodInfo staticMethodInfo = staticQA.serializedObject.targetObject.GetType().GetMethod("UpdateAsset");
+            SerializedProperty slideNo = activityContent.FindPropertyRelative("slideNo");
 
-            //     //         staticMethodInfo?.Invoke(staticQA.serializedObject.targetObject, null);
+            // Debug.Log(questionType.GetType());
 
-            //     //         EditorGUILayout.PropertyField(getTarget.);
-            //     //         break;
-            //     //     case QuestionType.Dynamic:
+            // questionType = (QuestionType)EditorGUILayout.EnumPopup("Question Type", );
 
-            //     //         MethodInfo dynamicMethodInfo = dynamicQA.serializedObject.targetObject.GetType().GetMethod("UpdateAsset");
+            EditorGUILayout.PropertyField(slideNo);
+            EditorGUILayout.PropertyField(questionType);
 
-            //     //         dynamicMethodInfo?.Invoke(dynamicQA.serializedObject.targetObject, null);
+            // Debug.Log("--- > " + questionType.enumNames[questionType.enumValueIndex]);
+            switch(questionType.enumValueIndex){
 
-            //     //         EditorGUILayout.PropertyField(dynamicQA);
-            //     //         break;
-            //     //     default:
-            //     //         EditorGUILayout.PropertyField(defaultQA);
-            //     //         break;
-            //     // }
-            // }
+                case 1:
+                    SerializedProperty staticQA = activityContent.FindPropertyRelative("staticQA");
+
+                    MethodInfo staticMethodInfo = staticQA.serializedObject.targetObject.GetType().GetMethod("UpdateAsset");
+
+                    staticMethodInfo?.Invoke(staticQA.serializedObject.targetObject, null);
+
+                    EditorGUILayout.PropertyField(staticQA);
+                    break;
+
+                case 2:
+                    SerializedProperty dynamicQA = activityContent.FindPropertyRelative("dynamicQA");
+
+                    MethodInfo dynamicMethodInfo = dynamicQA.serializedObject.targetObject.GetType().GetMethod("UpdateAsset");
+
+                    dynamicMethodInfo?.Invoke(dynamicQA.serializedObject.targetObject, null);
+
+                    EditorGUILayout.PropertyField(dynamicQA);
+                    break;
+
+                default:
+                    SerializedProperty defaultQA = activityContent.FindPropertyRelative("defaultQA");
+
+                    EditorGUILayout.PropertyField(defaultQA);
+                    break;
+            }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();            
         }
 
         EditorGUILayout.Space();
