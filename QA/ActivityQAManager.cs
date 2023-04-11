@@ -10,9 +10,7 @@ public class ActivityQA
     public FileType questionType;
     public FileType optionType;
 
-    public ActivityQA(){
-        Debug.Log($"Base class initialized");
-    }
+    public ActivityQA(){}
 
     public ActivityQA(int count){
         this.questionCount = count;
@@ -22,19 +20,32 @@ public class ActivityQA
 [Serializable]
 public class QA{
     public Component question;
-    public Component answer;
+    public Component[] answers;
     
     public void Update(){
         question.UpdateDimension();
-        answer.UpdateDimension();
+        foreach(var answer in answers){
+            answer.UpdateDimension();
+        }
     }
 }
 
 [Serializable]
 public class QAO{
     public Component question;
-    public Component answer;
+    public Component[] answers;
     public Component[] options;
+
+    public void Update(){
+        question.UpdateDimension();
+        foreach(var answer in answers){
+            answer.UpdateDimension();
+        }
+
+        foreach(var option in options){
+            option.UpdateDimension();
+        }
+    }
 }
 
 
@@ -42,9 +53,7 @@ public class QAO{
 public class DynamicQA : ActivityQA{
     public QAO[] questions;
 
-    public DynamicQA() : base(){
-        Debug.Log($"Dynamic class initialized");
-    }
+    public DynamicQA() : base(){}
 
     public DynamicQA(int count) : base(count){
         InstantiateObject();
@@ -57,6 +66,20 @@ public class DynamicQA : ActivityQA{
             questions[i] = new QAO();
         }
     }
+
+    void UpdateAsset(){
+        foreach(var question in questions){
+            question.Update();
+        }
+    }
+
+    public void Update(){
+        if(questions == null || questions.Length == 0){
+            InstantiateObject();
+        }else{
+            UpdateAsset();
+        }
+    }
 }
 
 [Serializable]
@@ -64,9 +87,7 @@ public class StaticQA : ActivityQA{
     public QA[] questions;
     public Component[] options;
     
-    public StaticQA() : base(){
-        Debug.Log($"Static class initialized");
-    }
+    public StaticQA() : base(){}
 
     public StaticQA(int count) : base(count){
         InstantiateObject();
@@ -82,16 +103,19 @@ public class StaticQA : ActivityQA{
     }
 
     void UpdateAsset(){
-        // for(int i=0; i<questions.Length; i++){
-        //     questions[i].UpdateDimen();
-        // }
+        foreach(var question in questions){
+            question.Update();
+        }
+        foreach(var option in options){
+            option.UpdateDimension();
+        }
     }
 
     public void Update(){
         if(questions == null || questions.Length == 0){
             InstantiateObject();
         }else{
-
+            UpdateAsset();
         }
     }
 }
