@@ -102,26 +102,15 @@ public enum QuestionType{
 [Serializable]
 public class Component{
     public string text;
-    public GameObject image;
+    public Sprite sprite;
     public AudioClip audioClip;
     public int width, height;
-    Sprite sprite;
 
     public void UpdateDimension(){
-        if(image == null) return;
+        if(sprite == null) return;
 
-        SpriteRenderer _sr;
-        Image _image;
-        if(image.TryGetComponent<SpriteRenderer>(out _sr)){
-            sprite = _sr.sprite;
-        }else if(image.TryGetComponent<Image>(out _image)){
-            sprite = _image.sprite;
-        }
-
-        if(sprite != null){
-            width = (int)(sprite.rect.width/2);
-            height = (int)(sprite.rect.height/2);
-        }
+        width = (int)(sprite.rect.width);
+        height = (int)(sprite.rect.height);
     }
 }
 
