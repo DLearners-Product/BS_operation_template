@@ -119,3 +119,25 @@ public class StaticQA : ActivityQA{
         }
     }
 }
+
+[Serializable]
+public class ActivityContent{
+    public QuestionType questionType;
+    public int questionCount, o_questionCount;
+    public StaticQA staticQA = new StaticQA();
+    public DynamicQA dynamicQA = new DynamicQA();
+    public ActivityQA defaultQA = null;
+
+    public void UpdateAsset(){
+#if UNITY_EDITOR
+        switch(questionType){
+            case QuestionType.Static:
+                staticQA.Update();
+                break;
+            case QuestionType.Dynamic:
+                dynamicQA.Update();
+                break;
+        }
+#endif
+    }
+}
