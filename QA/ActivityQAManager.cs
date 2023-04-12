@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class ActivityQA
+public abstract class ActivityQA
 {
     protected int questionCount;
     public FileType questionType;
@@ -15,6 +15,8 @@ public class ActivityQA
     public ActivityQA(int count){
         this.questionCount = count;
     }
+
+    public abstract void Update();
 }
 
 [Serializable]
@@ -48,7 +50,6 @@ public class QAO{
     }
 }
 
-
 [Serializable]
 public class DynamicQA : ActivityQA{
     public QAO[] questions;
@@ -73,7 +74,7 @@ public class DynamicQA : ActivityQA{
         }
     }
 
-    public void Update(){
+    public override void Update(){
         if(questions == null || questions.Length == 0){
             InstantiateObject();
         }else{
@@ -111,7 +112,7 @@ public class StaticQA : ActivityQA{
         }
     }
 
-    public void Update(){
+    public override void Update(){
         if(questions == null || questions.Length == 0){
             InstantiateObject();
         }else{
@@ -126,7 +127,6 @@ public class ActivityContent{
     public int slideNo;
     public StaticQA staticQA = new StaticQA();
     public DynamicQA dynamicQA = new DynamicQA();
-    public ActivityQA defaultQA = null;
 
     public void UpdateAsset(){
 #if UNITY_EDITOR

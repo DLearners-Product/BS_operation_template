@@ -7,14 +7,9 @@ using System.Reflection;
 [CustomEditor(typeof(ActivityContentManager)), CanEditMultipleObjects]
 public class ActivityContentManagerEditor : Editor
 {
-    ActivityContent[] activityContents;
-    // QuestionType qType;
     ActivityContentManager contentManager;
     SerializedObject getTarget;
 
-    SerializedProperty staticQA;
-    SerializedProperty dynamicQA;
-    SerializedProperty defaultQA;
     SerializedProperty _activityContents;
     int arrSize;
 
@@ -23,8 +18,6 @@ public class ActivityContentManagerEditor : Editor
         contentManager = (ActivityContentManager)target;
         
         getTarget = new SerializedObject(contentManager);
-
-        // activityContents = contentManager.activityContents;
 
         _activityContents = getTarget.FindProperty("activityContents");
     }
@@ -59,10 +52,6 @@ public class ActivityContentManagerEditor : Editor
 
             SerializedProperty slideNo = activityContent.FindPropertyRelative("slideNo");
 
-            // Debug.Log(questionType.GetType());
-
-            // questionType = (QuestionType)EditorGUILayout.EnumPopup("Question Type", );
-
             EditorGUILayout.PropertyField(slideNo);
             EditorGUILayout.PropertyField(questionType);
 
@@ -87,12 +76,6 @@ public class ActivityContentManagerEditor : Editor
                     dynamicMethodInfo?.Invoke(dynamicQA.serializedObject.targetObject, null);
 
                     EditorGUILayout.PropertyField(dynamicQA);
-                    break;
-
-                default:
-                    SerializedProperty defaultQA = activityContent.FindPropertyRelative("defaultQA");
-
-                    EditorGUILayout.PropertyField(defaultQA);
                     break;
             }
 
