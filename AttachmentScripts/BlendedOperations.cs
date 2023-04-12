@@ -6,8 +6,6 @@ using System;
 using TMPro;
 using UnityEngine.UI;
 // using UnityEditor.Events;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
 
 public class BlendedOperations : MonoBehaviour
 {
@@ -94,7 +92,6 @@ public class BlendedOperations : MonoBehaviour
         blendedData += "]";
 
         bridge.SendBlendedContentData(blendedData);
-        // Application.ExternalCall("send_blended_data", blendedData);
     }
 
     // Called from external JS
@@ -103,6 +100,14 @@ public class BlendedOperations : MonoBehaviour
         string scoreData =  ScoreManager.instance.GetActivityData();
         bridge.SendActivityScoreData(scoreData);
         ScoreManager.instance.ResetActivityData();
+    }
+
+    public void GetActivityContentData(){
+        ActivityContent[] activityContents = ActivityContentManager.instance.activityContents;
+        int activityContentLen = ActivityContentManager.instance.activityContents.Length;
+        for(int i=0; i < activityContentLen; i++){
+            Debug.Log(JsonUtility.ToJson(activityContents[i]));
+        }
     }
 
     public void CheckFunc(){
