@@ -1,9 +1,10 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
 using SimpleJSON;
+using System.IO;
 
 [Serializable]
 public class CommonScript
@@ -171,11 +172,19 @@ public class Component{
         }
     }
 
-    public void UpdateDimension(){
-        if(sprite == null) return;
+    string GetTextureBS64(){
+        if(texture == null) return "";
 
-        width = (int)(sprite.rect.width);
-        height = (int)(sprite.rect.height);
+        byte[] bytes = texture.EncodeToPNG();
+        string imgBase64 = Convert.ToBase64String(bytes);
+        return imgBase64;
+    }
+
+    public string GetComponentStringfyData(){
+        string responseData = "{";
+        responseData += $"\"text\":{text}, \"image\":{GetTextureBS64()}, \"image-width\":{width}, \"image-height\":{height}, \"audio\":{GetAudioBS64()}";
+        responseData +="}";
+        return responseData;
     }
 }
 
