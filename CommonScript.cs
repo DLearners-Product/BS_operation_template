@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -102,9 +102,74 @@ public enum QuestionType{
 [Serializable]
 public class Component{
     public string text;
-    public Sprite sprite;
+    public Texture2D texture;
     public AudioClip audioClip;
     public int width, height;
+    [SerializeField] float[] audioData;
+    [SerializeField] int _aduioSample, _audioChannel, _audioFrequency;
+
+    public void UpdateAssets(){
+        UpdateTextureData();
+
+        UpdateAudioData();
+    }
+
+    void UpdateTextureData(){
+        if(texture == null) {
+            width = 0;
+            height = 0;
+            return;
+        }
+
+        width = (int)(texture.width);
+        height = (int)(texture.height);
+    }
+
+    void UpdateAudioData(){
+        if(audioClip != null) {
+            audioData = null;
+            return;
+        }
+
+        _aduioSample = audioClip.samples;
+        _audioChannel = audioClip.channels;
+        _audioFrequency = audioClip.frequency;
+        audioData = new float[_aduioSample * _audioChannel];
+        audioClip.GetData(audioData, 0);
+    }
+
+    string GetAudioBS64(){
+        if(audioClip == null) return "";
+
+        byte[] bytes = new byte[audioData.Length * 2];
+        int index = 0;
+        foreach (float sample in audioData) {
+            short convertedSample = (short) (sample * short.MaxValue);
+            BitConverter.GetBytes(convertedSample).CopyTo(bytes, index);
+            index += 2;
+        }
+
+        using (MemoryStream stream = new MemoryStream()) {
+            using (BinaryWriter writer = new BinaryWriter(stream)) {
+                writer.Write(new char[4] { 'R', 'I', 'F', 'F' });
+                writer.Write(36 + bytes.Length);
+                writer.Write(new char[4] { 'W', 'A', 'V', 'E' });
+                writer.Write(new char[4] { 'f', 'm', 't', ' ' });
+                writer.Write(16);
+                writer.Write((ushort) 1);
+                writer.Write((ushort) _audioChannel);
+                writer.Write(_audioFrequency);
+                writer.Write(_audioFrequency * _audioChannel * 2);
+                writer.Write((ushort) (_audioChannel * 2));
+                writer.Write((ushort) 16);
+                writer.Write(new char[4] { 'd', 'a', 't', 'a' });
+                writer.Write(bytes.Length);
+                writer.Write(bytes);
+            }
+            byte[] wavBytes = stream.ToArray();
+            return Convert.ToBase64String(wavBytes);
+        }
+    }
 
     public void UpdateDimension(){
         if(sprite == null) return;
