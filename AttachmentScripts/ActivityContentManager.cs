@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -13,11 +13,6 @@ public class ActivityContentManager : MonoBehaviour
     {
         if(instance == null)
             instance = this;
-    }
-
-    private void OnValidate()
-    {
-
     }
 
     public void UpdateAsset(){
