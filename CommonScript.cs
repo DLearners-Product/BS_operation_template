@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -102,12 +102,14 @@ public enum QuestionType{
 
 [Serializable]
 public class Component{
+    public int id=0;
     public string text;
-    public Texture2D texture;
+    public Sprite _sprite { get; private set; }
+    public Texture2D texture2D;
     public AudioClip audioClip;
     public int width, height;
-    [SerializeField] float[] audioData;
-    [SerializeField] int _aduioSample, _audioChannel, _audioFrequency;
+    float[] audioData;
+    int _aduioSample, _audioChannel, _audioFrequency;
 
     public void UpdateAssets(){
         UpdateTextureData();
@@ -173,7 +175,24 @@ public class Component{
     }
 
     string GetTextureBS64(){
-        if(texture == null) return "";
+        if(texture2D == null) return "";
+        
+        byte[] bytes;
+        // Texture2D texture = ConvertSpriteToTexture(_sprite);
+        bytes = texture2D.EncodeToPNG();
+
+        if(bytes == null){
+            Texture2D newText = new Texture2D(width, height, TextureFormat.RGBA32, false);
+            try{
+                newText.SetPixels(texture2D.GetPixels());
+                newText.Apply();
+                bytes = newText.EncodeToPNG();
+            }catch{
+                newText.SetPixels32(texture2D.GetPixels32());
+                newText.Apply();
+                bytes = newText.EncodeToPNG();
+            }
+        }
 
         byte[] bytes = texture.EncodeToPNG();
         string imgBase64 = Convert.ToBase64String(bytes);
