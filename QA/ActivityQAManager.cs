@@ -1,23 +1,162 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public abstract class ActivityQA
-{
-    protected int questionCount;
-    public FileType questionType;
-    public FileType optionType;
+#region DIFFFRENT_TYPE_OF_ACTIVITY_QA
+    [Serializable]
+    public abstract class ActivityQA
+    {
+        protected int questionCount;
+        public FileType questionType;
+        public FileType optionType;
 
-    public ActivityQA(){}
+        public ActivityQA(){}
 
-    public ActivityQA(int count){
-        this.questionCount = count;
+        public ActivityQA(int count){
+            this.questionCount = count;
+        }
+
+        public abstract void Update();
     }
 
-    public abstract void Update();
-}
+    [Serializable]
+    public class DynamicQA : ActivityQA{
+        public QAO[] questions;
+        public List<AdditionalComponent> additionalFields;
+        string qaData;
+
+        public DynamicQA() : base(){}
+
+        public DynamicQA(int count) : base(count){
+            InstantiateObject();
+        }
+
+        void InstantiateObject(){
+            questions = new QAO[questionCount];
+
+            for(int i=0; i<questionCount; i++){
+                questions[i] = new QAO();
+            }
+        }
+
+        void UpdateAsset(){
+            foreach(var question in questions){
+                question.Update();
+            }
+        }
+
+        public override void Update(){
+            if(questions == null || questions.Length == 0){
+                InstantiateObject();
+            }else{
+                UpdateAsset();
+            }
+        }
+
+        string GetArrayData(QAO[] qas){
+            string data = "";
+            for (int i=0; i < qas.Length; i++)
+            {
+                data += qas[i].GetData();
+                if(i < (qas.Length -1)){
+                    data += ",";
+                }
+            }
+            return data;
+        }
+
+        public string GetQAData(){
+            qaData = "[";
+            for(int i=0; i<questions.Length; i++){
+                qaData += questions[i].GetData();
+                if(i < (questions.Length - 1)){
+                    qaData += ", ";
+                }
+            }
+            qaData += "]";
+            return qaData;
+        }
+    }
+
+    [Serializable]
+    public class StaticQA : ActivityQA{
+        public QA[] questions;
+        public Component[] options;
+        public List<AdditionalComponent> additionalFields;
+        string qaData;
+        
+        public StaticQA() : base(){}
+
+        public StaticQA(int count) : base(count){
+            InstantiateObject();
+        }
+
+        void InstantiateObject(){
+            questions = new QA[questionCount];
+            options = new Component[questionCount];
+
+            for(int i=0; i<questionCount; i++){
+                options[i] = new Component();
+            }
+        }
+
+        void UpdateAsset(){
+            foreach(var question in questions){
+                question.Update();
+            }
+            foreach(var option in options){
+                option.UpdateAssets();
+            }
+        }
+
+        public override void Update(){
+            if(questions == null || questions.Length == 0){
+                InstantiateObject();
+            }else{
+                UpdateAsset();
+            }
+        }
+
+        public string GetQAData(){
+            qaData = "[";
+            for(int i=0; i<questions.Length; i++){
+                qaData += questions[i].GetData();
+                if(i < (questions.Length - 1)){
+                    qaData += ", ";
+                }
+            }
+            qaData += "]";
+            return qaData;
+        }
+
+        public string GetOptionData(){
+            qaData = "[";
+            for(int i=0; i<options.Length; i++){
+                qaData += options[i].GetComponentStringfyData();
+                if(i < (options.Length - 1)){
+                    qaData += ", ";
+                }
+            }
+            qaData += "]";
+            return qaData;
+        }
+
+        public string GetAdditionalData(){
+            qaData = "[";
+            if(additionalFields.Count > 0){
+                for(int i=0; i<additionalFields.Count; i++){
+                    qaData += additionalFields[i].GetData();
+                    if(i < (options.Length - 1)){
+                       qaData += ", ";
+                    }
+                }
+            }
+            qaData += "]";
+            return qaData;
+        }
+    }
+#endregion
 
 [Serializable]
 public class QA{
@@ -33,7 +172,7 @@ public class QA{
     }
 
     string GetArrayData(Component[] components){
-        string data = "";
+        string data = "[";
         for (int i=0; i < components.Length; i++)
         {
             data += components[i].GetComponentStringfyData();
@@ -41,13 +180,14 @@ public class QA{
                 data += ",";
             }
         }
+        data += "]";
         return data;
     }
 
     public string GetData(){
         strData = "{";
-        strData += $"\"question\":{question.GetComponentStringfyData()}, \"answer\":[";
-        strData += GetArrayData(answers) + "]}";
+        strData += $"\"question\":{question.GetComponentStringfyData()}, \"answer\":";
+        strData += GetArrayData(answers) + "}";
         return strData;
     }
 }
@@ -71,7 +211,7 @@ public class QAO{
     }
 
     string GetArrayData(Component[] components){
-        string data = "";
+        string data = "[";
         for (int i=0; i < components.Length; i++)
         {
             data += components[i].GetComponentStringfyData();
@@ -79,127 +219,34 @@ public class QAO{
                 data += ",";
             }
         }
+        data += "]";
         return data;
     }
 
     public string GetData(){
         strData = "{";
-        strData += $"\"question\":{question.GetComponentStringfyData()}, \"answer\":[";
-        strData += GetArrayData(answers) + "], \"option\":[";
-        strData += GetArrayData(options) + "]}";
+        strData += $"\"question\":{question.GetComponentStringfyData()}, \"answer\":";
+        strData += GetArrayData(answers) + ", \"option\":";
+        strData += GetArrayData(options) + "}";
         return strData;
     }
 }
 
 [Serializable]
-public class DynamicQA : ActivityQA{
-    public QAO[] questions;
-    string qaData;
+public class AdditionalComponent{
+    public string key;
+    public QuestionType dataType;
+    public Component value;
+    string activityContent;
 
-    public DynamicQA() : base(){}
-
-    public DynamicQA(int count) : base(count){
-        InstantiateObject();
-    }
-
-    void InstantiateObject(){
-        questions = new QAO[questionCount];
-
-        for(int i=0; i<questionCount; i++){
-            questions[i] = new QAO();
-        }
-    }
-
-    void UpdateAsset(){
-        foreach(var question in questions){
-            question.Update();
-        }
-    }
-
-    public override void Update(){
-        if(questions == null || questions.Length == 0){
-            InstantiateObject();
-        }else{
-            UpdateAsset();
-        }
-    }
-
-    string GetArrayData(QAO[] qas){
-        string data = "";
-        for (int i=0; i < qas.Length; i++)
-        {
-            data += qas[i].GetData();
-            if(i < (qas.Length -1)){
-                data += ",";
-            }
-        }
-        return data;
-    }
-
-    public string GetQAData(){
-        qaData = "[";
-        for(int i=0; i<questions.Length; i++){
-            qaData += questions[i].GetData();
-        }
-        qaData += "]";
-        return qaData;
-    }
-}
-
-[Serializable]
-public class StaticQA : ActivityQA{
-    public QA[] questions;
-    public Component[] options;
-    string qaData;
-    
-    public StaticQA() : base(){}
-
-    public StaticQA(int count) : base(count){
-        InstantiateObject();
-    }
-
-    void InstantiateObject(){
-        questions = new QA[questionCount];
-        options = new Component[questionCount];
-
-        for(int i=0; i<questionCount; i++){
-            options[i] = new Component();
-        }
-    }
-
-    void UpdateAsset(){
-        foreach(var question in questions){
-            question.Update();
-        }
-        foreach(var option in options){
-            option.UpdateAssets();
-        }
-    }
-
-    public override void Update(){
-        if(questions == null || questions.Length == 0){
-            InstantiateObject();
-        }else{
-            UpdateAsset();
-        }
-    }
-
-    public string GetQAData(){
-        qaData = "[";
-        for(int i=0; i<questions.Length; i++){
-            qaData += questions[i].GetData();
-        }
-        qaData += "]";
-        return qaData;
-    }
-
-    public string GetOptionData(){
-        qaData = "[";
-        for(int i=0; i<options.Length; i++){
-            qaData += options[i].GetComponentStringfyData();
-        }
-        qaData += "]";
-        return qaData;
+    public string GetData(){
+        activityContent = "{";
+        activityContent += $"\"{key}\"";
+        activityContent += " : {";
+        activityContent += $"\"DataType\" : \"{dataType.ToString()}\",";
+        activityContent += $"\"Value\" : {value.GetComponentStringfyData()}";
+        activityContent += "}}";
+        return activityContent;
     }
 }
 
