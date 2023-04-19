@@ -201,7 +201,7 @@ public class Component{
 
     public string GetComponentStringfyData(){
         string responseData = "{";
-        responseData += $"\"text\":{text}, \"image\":{GetTextureBS64()}, \"image-width\":{width}, \"image-height\":{height}, \"audio\":{GetAudioBS64()}";
+        responseData += $"\"id\":{id}, \"text\":\"{text}\", \"image\":\"{GetTextureBS64()}\", \"image-width\":\"{width}\", \"image-height\":\"{height}\", \"audio\":\"{GetAudioBS64()}\"";
         responseData +="}";
         return responseData;
     }
