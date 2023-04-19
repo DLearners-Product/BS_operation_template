@@ -5,6 +5,7 @@ using SimpleJSON;
 using System;
 using TMPro;
 using UnityEngine.UI;
+using System.IO;
 // using UnityEditor.Events;
 
 public class BlendedOperations : MonoBehaviour
@@ -97,16 +98,16 @@ public class BlendedOperations : MonoBehaviour
     // Called from external JS
     public void GetActivityScoreData(){
         Debug.Log($"Came to GetActivityScoreData");
-        string scoreData =  ScoreManager.instance.GetActivityData();
+        string scoreData = ScoreManager.instance.GetActivityData();
         bridge.SendActivityScoreData(scoreData);
         ScoreManager.instance.ResetActivityData();
     }
 
     public void GetActivityContentData(){
-        ActivityContent[] activityContents = ActivityContentManager.instance.activityContents;
-        int activityContentLen = ActivityContentManager.instance.activityContents.Length;
-        for(int i=0; i < activityContentLen; i++){
-            Debug.Log(JsonUtility.ToJson(activityContents[i]));
+        string filePath = "ActivityContent.txt";
+        string activityOerallData = ActivityContentManager.instance.GetOverallData();
+        using(StreamWriter writer = new StreamWriter(filePath)){
+            writer.WriteLine(activityOerallData);
         }
     }
 
