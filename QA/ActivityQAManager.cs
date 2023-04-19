@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -206,6 +206,7 @@ public class StaticQA : ActivityQA{
 [Serializable]
 public class ActivityContent{
     public QuestionType questionType;
+    public string activityName;
     public int slideNo;
     public StaticQA staticQA = new StaticQA();
     public DynamicQA dynamicQA = new DynamicQA();
@@ -224,19 +225,23 @@ public class ActivityContent{
 #endif
     }
 
-    public string GetActivityData(){
+    public string GetData(){
         activityData = "{";
-        activityData += $"\"Question Type\":{questionType.ToString()}";
-        activityData += $"\"Slide No.\":{slideNo.ToString()}";
+        activityData += $"\"ActivityName\":\"{activityName}\", ";
+        activityData += $"\"SlideNo.\":\"{slideNo.ToString()}\", ";
+        activityData += $"\"QAType\":\"{questionType.ToString()}\"";
         switch(questionType){
             case QuestionType.Static:
-                activityData += $"\"QA\":"+staticQA.GetQAData();
+                activityData += ", ";
+                activityData += $"\"QA\":"+staticQA.GetQAData()+", ";
                 activityData += $"\"Option\":"+staticQA.GetOptionData();
                 break;
             case QuestionType.Dynamic:
+                activityData += ", ";
                 activityData += $"\"QA\":"+dynamicQA.GetQAData();
                 break;
         }
+        activityData += "}";
         return activityData;
     }
 }
