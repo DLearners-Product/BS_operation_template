@@ -52,7 +52,10 @@ public class ActivityContentManagerEditor : Editor
 
             SerializedProperty slideNo = activityContent.FindPropertyRelative("slideNo");
 
+            SerializedProperty activityName = activityContent.FindPropertyRelative("activityName");
+
             EditorGUILayout.PropertyField(slideNo);
+            EditorGUILayout.PropertyField(activityName);
             EditorGUILayout.PropertyField(questionType);
 
             // Debug.Log("--- > " + questionType.enumNames[questionType.enumValueIndex]);
