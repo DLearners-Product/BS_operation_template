@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -118,18 +118,18 @@ public class Component{
     }
 
     void UpdateTextureData(){
-        if(texture == null) {
+        if(texture2D == null) {
             width = 0;
             height = 0;
             return;
         }
 
-        width = (int)(texture.width);
-        height = (int)(texture.height);
+        width = (int)(texture2D.width);
+        height = (int)(texture2D.height);
     }
 
     void UpdateAudioData(){
-        if(audioClip != null) {
+        if(audioClip == null) {
             audioData = null;
             return;
         }
@@ -194,7 +194,6 @@ public class Component{
             }
         }
 
-        byte[] bytes = texture.EncodeToPNG();
         string imgBase64 = Convert.ToBase64String(bytes);
         return imgBase64;
     }
