@@ -117,6 +117,30 @@ public class Component{
         UpdateAudioData();
     }
 
+    Texture2D ConvertSpriteToTexture(Sprite sprite)
+    {
+        try{
+            // if(sprite.rect.width != sprite.texture.width){
+                Texture2D newText = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height);
+                Color[] colors = newText.GetPixels();
+                Color[] newColors = sprite.texture.GetPixels((int)System.Math.Ceiling(sprite.textureRect.x),
+                    (int)System.Math.Ceiling(sprite.textureRect.y),
+                    (int)System.Math.Ceiling(sprite.textureRect.width),
+                    (int)System.Math.Ceiling(sprite.textureRect.height));
+                Debug.Log(colors.Length+"_"+ newColors.Length);
+                newText.SetPixels(newColors);
+                newText.Apply();
+                return newText;
+            // }else{
+            //     Debug.Log("In else part");
+            //     return sprite.texture;
+            // }
+        }catch{
+            Debug.Log("In catch");
+            return sprite.texture;
+        }
+    }
+
     void UpdateTextureData(){
         if(texture2D == null) {
             width = 0;
