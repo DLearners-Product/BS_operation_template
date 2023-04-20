@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -55,18 +55,19 @@ public class TextComponentData{
 [Serializable]
 public class SlideActivityData{
     public string question;
-    public int questionNo;
+    public int questionID = 0;
+    public int answerID = 0;
     public int tries = 0;
     public int failures = 0;
     public int score = 0;
     public string answer;
 
     public SlideActivityData(int qNo){
-        this.questionNo = qNo;
+        this.questionID = qNo;
     }
 
     public SlideActivityData(int qNo, string question){
-        this.questionNo = qNo;
+        this.questionID = qNo;
         this.question = question;
     }
 
