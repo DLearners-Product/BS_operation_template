@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,19 +6,22 @@ public class ScoreManager : MonoBehaviour
 {
     string activityData;
     public static ScoreManager instance;
+
+    // Contains ScoreData for all Slides lessonGameActivityDatas.Count = Slide Count
     [SerializeField] BlendedSlideActivityData[] lessonGameActivityDatas;
-    // [SerializeField] GameActivityData[] GAA_activityData;
 
     private void Awake()
     {
-        instance = this;
+        if(instance == null)
+            instance = this;
     }
 
-    private void Start() {
+    private void OnEnable() {
         InitializeLessonActivityData(MainBlendedData.instance.slideDatas.Count);
+        // InitializeLessonActivityData(Main_Blended.OBJ_main_blended.GA_levelsIG.Length);
     }
 
-    public void InitializeLessonActivityData(int arrLength){
+    void InitializeLessonActivityData(int arrLength){
         lessonGameActivityDatas = new BlendedSlideActivityData[arrLength];
         for(int i=0; i<lessonGameActivityDatas.Length; i++){
             if(lessonGameActivityDatas[i] == null){
@@ -48,8 +51,10 @@ public class ScoreManager : MonoBehaviour
     // }
 
     public void THI_InitialiseGameActivity(int QIndex){
-        if (lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[QIndex] == null){
-            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[QIndex] = new SlideActivityData(QIndex);
+        Debug.Log("QIndex : "+QIndex);
+        Debug.Log(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno]);
+        if ((lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities.Count - 1) < QIndex){
+            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities.Add(new SlideActivityData(QIndex));
         }
     }
 
@@ -60,11 +65,11 @@ public class ScoreManager : MonoBehaviour
         activityData = "[";
 
         if(lessonGameActivityDatas[levelno].slideActivities != null){
-            for(int i=0; i < lessonGameActivityDatas[levelno].slideActivities.Length; i++){
+            for(int i=0; i < lessonGameActivityDatas[levelno].slideActivities.Count; i++){
                 if(lessonGameActivityDatas[levelno].slideActivities[i].isEmpty()) continue;
 
                 activityData += lessonGameActivityDatas[levelno].slideActivities[i].getParsedJsonData();
-                if((i+1) < lessonGameActivityDatas[levelno].slideActivities.Length){
+                if((i+1) < lessonGameActivityDatas[levelno].slideActivities.Count){
                     activityData += ",";
                 }
             }
@@ -80,48 +85,42 @@ public class ScoreManager : MonoBehaviour
 
         if(lessonGameActivityDatas[levelno] == null || lessonGameActivityDatas[levelno].slideActivities == null) return;
 
-        for(int i=0; i < lessonGameActivityDatas[levelno].slideActivities.Length; i++){
+        for(int i=0; i < lessonGameActivityDatas[levelno].slideActivities.Count; i++){
             lessonGameActivityDatas[levelno].slideActivities[i] = new SlideActivityData(i);
         }
     }
 
-    // public string GetAllActivityData(){
-    // }
-
     public void PlayerTried(int questionIndex){
-        if(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities.Length > questionIndex){
+        if(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities.Count > questionIndex){
             THI_InitialiseGameActivity(questionIndex);
             Debug.Log($"SlideData : {lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex]}");
+
             if(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex] == null)
                 lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex] = new SlideActivityData(questionIndex);
+
             lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].tries++;
         }
     }
 
-    public void RightAnswer(int questionIndex, int scorevalue = 1, string questionValue=null, string answerValue=null, bool appendAnswer=false){
+    public void RightAnswer(int questionIndex, int scorevalue = 1, int questionID = -1, int answerID = -1){
         THI_InitialiseGameActivity(questionIndex);
-        if(questionValue != null)
-            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].question = questionValue;
-        if(answerValue != null)
-        {
-            bool checkIsAnswerEmpty = lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answer != null && lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answer.Trim() != "";
-            if (appendAnswer && checkIsAnswerEmpty)
-            {
-                lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answer += " | "+answerValue;
-            }
-            else
-                lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answer = answerValue;
-        }
 
         lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].tries++;
         lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].score += scorevalue;
+        if(questionID != -1)
+            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].questionID = questionID;
+        if(answerID != -1)
+            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answerID = answerID;
     }
 
-    public void WrongAnswer(int questionIndex, int scorevalue = 1, string questionValue=null){
+    public void WrongAnswer(int questionIndex, int scorevalue = 1, int questionID = -1, int answerID = -1){
         THI_InitialiseGameActivity(questionIndex);
-        if(questionValue != null)
-            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].question = questionValue;
+
         lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].tries++;
         lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].failures += scorevalue;
+        if(questionID != -1)
+            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].questionID = questionID;
+        if(answerID != -1)
+            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answerID = answerID;
     }
 }
