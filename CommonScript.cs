@@ -104,8 +104,8 @@ public enum QuestionType{
 public class Component{
     public int id=0;
     public string text;
-    public Sprite _sprite { get; private set; }
-    public Texture2D texture2D;
+    public Sprite _sprite;
+    public Texture2D texture2D  { get; private set; }
     public AudioClip audioClip;
     public int width, height;
     float[] audioData;
@@ -142,14 +142,14 @@ public class Component{
     }
 
     void UpdateTextureData(){
-        if(texture2D == null) {
+        if(_sprite == null) {
             width = 0;
             height = 0;
             return;
         }
 
-        width = (int)(texture2D.width);
-        height = (int)(texture2D.height);
+        width = (int)(_sprite.rect.width);
+        height = (int)(_sprite.rect.height);
     }
 
     void UpdateAudioData(){
