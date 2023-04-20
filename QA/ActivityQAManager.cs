@@ -252,9 +252,9 @@ public class AdditionalComponent{
 
 [Serializable]
 public class ActivityContent{
-    public QuestionType questionType;
-    public string activityName;
     public int slideNo;
+    public string activityName;
+    public QuestionType questionType;
     public StaticQA staticQA = new StaticQA();
     public DynamicQA dynamicQA = new DynamicQA();
     string activityData;
