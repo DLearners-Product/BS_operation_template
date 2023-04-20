@@ -9,7 +9,8 @@ public class ActivityContentManager : MonoBehaviour
     public ActivityContent[] activityContents;
     public static ActivityContentManager instance;
     string activityContentData;
-    private void Start()
+
+    private void Awake()
     {
         if(instance == null)
             instance = this;
