@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -62,6 +62,17 @@ public class QAManager : MonoBehaviour
         }
     }
 
+    public Component[] GetAnswer(int activityNo, int questionNo){
+        ActivityContent currentSlideActivityContent = currentSlideActivityContents[activityNo];
+        switch(currentSlideActivityContent.questionType){
+            case QuestionType.Static:
+                return currentSlideActivityContent.staticQA.questions[questionNo].answers;
+            case QuestionType.Dynamic:
+                return currentSlideActivityContent.dynamicQA.questions[questionNo].GetAnswers();
+            default:
+                return null;
+        }
+    }
     public Dictionary<string, Component> GetAdditionalField(int activityNo){
         ActivityContent currentSlideActivityContent = currentSlideActivityContents[activityNo];
         List<AdditionalComponent> additionalComponents = currentSlideActivityContent.staticQA.additionalFields;
