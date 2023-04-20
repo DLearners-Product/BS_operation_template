@@ -1,29 +1,31 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class QAManager : MonoBehaviour
 {
-    List<ActivityContent> currentSlideActivityContents;
+    List<ActivityContent> currentSlideActivityContents = new List<ActivityContent>();
     ActivityContent[] activityContents;
     public static QAManager instance;
     Dictionary<string, Component> additionalField;
     int currentSlideNum;
+
+    private void Awake() {
+        if(instance == null)
+            instance = this;
+    }
     
     void Start()
     {
-        if(instance == null)
-            instance = this;
-
-        currentSlideActivityContents = new List<ActivityContent>();
         additionalField = new Dictionary<string, Component>();
-        activityContents = ActivityContentManager.instance.activityContents;
-        Debug.Log(activityContents);
     }
 
     public void UpdateActivityQuestion(){
-        currentSlideActivityContents.Clear();
+        currentSlideActivityContents?.Clear();
         currentSlideNum = Main_Blended.OBJ_main_blended.levelno;
+        if(activityContents == null)
+            activityContents = ActivityContentManager.instance.activityContents;
+        
         foreach (var activityContent in activityContents)
         {
             if(activityContent.slideNo == currentSlideNum){
@@ -73,6 +75,7 @@ public class QAManager : MonoBehaviour
                 return null;
         }
     }
+
     public Dictionary<string, Component> GetAdditionalField(int activityNo){
         ActivityContent currentSlideActivityContent = currentSlideActivityContents[activityNo];
         List<AdditionalComponent> additionalComponents = currentSlideActivityContent.staticQA.additionalFields;
