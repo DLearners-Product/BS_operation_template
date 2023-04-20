@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -83,7 +83,7 @@ public class SlideActivityData{
 
 [Serializable]
 public class BlendedSlideActivityData{
-    public SlideActivityData[] slideActivities;
+    public List<SlideActivityData> slideActivities = new List<SlideActivityData>();
 }
 
 public enum FileType{
@@ -108,7 +108,7 @@ public class Component{
     public Sprite _sprite;
     public Texture2D texture2D  { get; private set; }
     public AudioClip audioClip;
-    public int width, height;
+    int width, height;
     float[] audioData;
     int _aduioSample, _audioChannel, _audioFrequency;
 
@@ -229,6 +229,11 @@ public class Component{
         responseData +="}";
         return responseData;
     }
+}
+
+[Serializable]
+public class OptionComponent : Component{
+    public bool isAnswer;
 }
 
 #endregion
