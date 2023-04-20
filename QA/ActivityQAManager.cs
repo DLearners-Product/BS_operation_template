@@ -195,19 +195,29 @@ public class QA{
 [Serializable]
 public class QAO{
     public Component question;
-    public Component[] answers;
-    public Component[] options;
+    // public Component[] answers;
+    public OptionComponent[] options;
     string strData;
 
     public void Update(){
         question.UpdateAssets();
-        foreach(var answer in answers){
-            answer.UpdateAssets();
-        }
+        // foreach(var answer in answers){
+        //     answer.UpdateAssets();
+        // }
 
         foreach(var option in options){
             option.UpdateAssets();
         }
+    }
+
+    public OptionComponent[] GetAnswers(){
+        List<OptionComponent> answers = new List<OptionComponent>();
+        foreach (var option in options)
+        {
+            if(option.isAnswer)
+                answers.Add(option);
+        }
+        return answers.ToArray();
     }
 
     string GetArrayData(Component[] components){
@@ -226,7 +236,7 @@ public class QAO{
     public string GetData(){
         strData = "{";
         strData += $"\"question\":{question.GetComponentStringfyData()}, \"answer\":";
-        strData += GetArrayData(answers) + ", \"option\":";
+        strData += GetArrayData(GetAnswers()) + ", \"option\":";
         strData += GetArrayData(options) + "}";
         return strData;
     }
