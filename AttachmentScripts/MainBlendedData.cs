@@ -22,12 +22,10 @@ public class MainBlendedData : MonoBehaviour
         if(instance == null){
             instance = this;
         }
-        Debug.Log("Awake called..");
     }
 
     void Start()
     {
-        Debug.Log($"start method called");
         slideDataCounts = new List<int>();
 
         if(slideDatas == null || slideDatas.Count <= 0) return;
@@ -114,8 +112,15 @@ public class MainBlendedData : MonoBehaviour
         }
     }
 
-    private void OnValidate() {
+    private void OnDrawGizmos() {
+        if(!Application.isPlaying){
+            UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+            UnityEditor.SceneView.RepaintAll();
+        }
+    }
 
+    private void OnValidate() {
+        
     }
 
 }
