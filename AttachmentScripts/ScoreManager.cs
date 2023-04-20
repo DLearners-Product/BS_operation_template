@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,21 +27,25 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    public void InstantiateScore(int arrSize){
-        // Debug.Log($"came to InstantiateScore "+arrSize);
-        // Debug.Log($"Level No : "+Main_Blended.OBJ_main_blended.levelno);
-        // Debug.Log(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities);
+    /* 
+        - This fucntion is removed dure to BlendedSlideActivityData.slideActivities is converted from Array to List
+        - Array is Changed to list due to question with multiple answer is to be recorded
+    */
+    // public void InstantiateScore(int arrSize){
+    //     // Debug.Log($"came to InstantiateScore "+arrSize);
+    //     // Debug.Log($"Level No : "+Main_Blended.OBJ_main_blended.levelno);
+    //     // Debug.Log(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities);
 
-        if(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities == null || lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities.Length <= 0){
-            Debug.Log($"Slide activity initialized");
-            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities = new SlideActivityData[arrSize];
-            for(int i=0; i<arrSize; i++){
-                THI_InitialiseGameActivity(i);
-            }
-        }else{
-            Debug.Log($"Slide activity not initialized");
-        }
-    }
+    //     if(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities == null || lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities.Length <= 0){
+    //         Debug.Log($"Slide activity initialized");
+    //         lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities = new SlideActivityData[arrSize];
+    //         for(int i=0; i<arrSize; i++){
+    //             THI_InitialiseGameActivity(i);
+    //         }
+    //     }else{
+    //         Debug.Log($"Slide activity not initialized");
+    //     }
+    // }
 
     public void THI_InitialiseGameActivity(int QIndex){
         if (lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[QIndex] == null){
