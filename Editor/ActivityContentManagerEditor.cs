@@ -27,7 +27,10 @@ public class ActivityContentManagerEditor : Editor
         getTarget.Update();
 
         arrSize = _activityContents.arraySize;
-        arrSize = EditorGUILayout.IntField ("List Size", arrSize);
+
+        using(new EditorGUI.DisabledScope(true)){
+            arrSize = EditorGUILayout.IntField ("Total Activity", arrSize);
+        }
 
         // Debug.Log($"Array Size : {arrSize}");
         if(arrSize != _activityContents.arraySize){
@@ -44,7 +47,14 @@ public class ActivityContentManagerEditor : Editor
 
             EditorGUILayout.Space();
 
+            EditorGUILayout.BeginHorizontal();
+
             EditorGUILayout.LabelField($"Activity {(i + 1)}");
+            if(GUILayout.Button("-", GUILayout.MaxWidth(15), GUILayout.MaxHeight(15))){
+                _activityContents.DeleteArrayElementAtIndex(i);
+            }
+
+            EditorGUILayout.EndHorizontal();
 
             SerializedProperty activityContent = _activityContents.GetArrayElementAtIndex(i);
 
