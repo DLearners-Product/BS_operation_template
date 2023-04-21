@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -87,6 +87,10 @@ public class ActivityContentManagerEditor : Editor
         }
 
         EditorGUILayout.Space();
+
+        if(GUILayout.Button("Add Activity")){
+            _activityContents.InsertArrayElementAtIndex(_activityContents.arraySize);
+        }
 
         getTarget.ApplyModifiedProperties();
     }
