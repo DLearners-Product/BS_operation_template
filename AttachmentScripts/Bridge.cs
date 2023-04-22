@@ -52,23 +52,32 @@ public class Bridge : MonoBehaviour
 #if !UNITY_EDITOR && UNITY_WEBGL
         WebGLInput.captureAllKeyboardInput = true;
 #endif
-        slide_name = new string[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        slideInst = new string[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        videoSlides = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        worksheetSlides = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        syllableSlides = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        grammerSlides = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        activitySlides = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        isManualActivity = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
+        slide_name = new string[MainBlendedData.instance.slideDatas.Count];
+        slideInst = new string[MainBlendedData.instance.slideDatas.Count];
+        videoSlides = new bool[MainBlendedData.instance.slideDatas.Count];
+        worksheetSlides = new bool[MainBlendedData.instance.slideDatas.Count];
+        syllableSlides = new bool[MainBlendedData.instance.slideDatas.Count];
+        grammerSlides = new bool[MainBlendedData.instance.slideDatas.Count];
+        activitySlides = new bool[MainBlendedData.instance.slideDatas.Count];
+        isManualActivity = new bool[MainBlendedData.instance.slideDatas.Count];
 
-        slide_name = Main_Blended.OBJ_main_blended.SLIDE_NAMES;
-        slideInst = Main_Blended.OBJ_main_blended.TEACHER_INSTRUCTION;
-        videoSlides = Main_Blended.OBJ_main_blended.HAS_VIDEO;
-        worksheetSlides = Main_Blended.OBJ_main_blended.HAS_WORKSHEET;
-        syllableSlides = Main_Blended.OBJ_main_blended.HAS_SYLLABLE;
-        grammerSlides = Main_Blended.OBJ_main_blended.HAS_GRAMMER;
-        activitySlides = Main_Blended.OBJ_main_blended.HAS_ACTIVITY;
-        isManualActivity = Main_Blended.OBJ_main_blended.IS_MANUAL_ACTIVITY;
+        // slide_name = Main_Blended.OBJ_main_blended.SLIDE_NAMES;
+        // slideInst = Main_Blended.OBJ_main_blended.TEACHER_INSTRUCTION;
+        // videoSlides = Main_Blended.OBJ_main_blended.HAS_VIDEO;
+        // worksheetSlides = Main_Blended.OBJ_main_blended.HAS_WORKSHEET;
+        // syllableSlides = Main_Blended.OBJ_main_blended.HAS_SYLLABLE;
+        // grammerSlides = Main_Blended.OBJ_main_blended.HAS_GRAMMER;
+        // activitySlides = Main_Blended.OBJ_main_blended.HAS_ACTIVITY;
+        // isManualActivity = Main_Blended.OBJ_main_blended.IS_MANUAL_ACTIVITY;
+
+        slide_name = MainBlendedData.instance.GetStringData("SLIDE_NAMES");
+        slideInst = MainBlendedData.instance.GetStringData("TEACHER_INSTRUCTION");
+        videoSlides = MainBlendedData.instance.GetBoolData("HAS_VIDEO");
+        worksheetSlides = MainBlendedData.instance.GetBoolData("HAS_WORKSHEET");
+        syllableSlides = MainBlendedData.instance.GetBoolData("HAS_SYLLABLE");
+        grammerSlides = MainBlendedData.instance.GetBoolData("HAS_GRAMMER");
+        activitySlides = MainBlendedData.instance.GetBoolData("HAS_ACTIVITY");
+        isManualActivity = MainBlendedData.instance.GetBoolData("IS_MANUAL_ACTIVITY");
 
         GetTeacherInst();
         getGameName();

@@ -23,6 +23,15 @@ public class Slide{
     public string name;
     public GameObject slideObject;
     public List<TextComponent> textComponents;
+    public string slideName;
+    public string teacherInstruction;
+    public string activityInstruction;
+    public bool HAS_VIDEO,
+                HAS_WORKSHEET,
+                HAS_SYLLABLE,
+                HAS_GRAMMER,
+                HAS_ACTIVITY,
+                IS_MANUAL_ACTIVITY;
 }
 
 [Serializable]
