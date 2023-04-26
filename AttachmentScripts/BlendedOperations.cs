@@ -111,6 +111,28 @@ public class BlendedOperations : MonoBehaviour
         }
     }
 
+    public void GetActivityQA(){
+        Debug.Log("GetActivityQA");
+        // string activityData = "";
+        List<ActivityContent> activityContents = QAManager.instance.GetCurrentActivityContents();
+        // for(int i=0; i<activityContents.Count; i++){
+        //     activityData += activityContents[i].GetData();
+        // }
+        string qaData = "";
+        if(activityContents.Count > 0){
+            Debug.Log("if part");
+            qaData = activityContents[0].GetData();
+            Debug.Log(qaData);
+            bridge.PassQAData(qaData);
+        }else{
+            Debug.Log("else part");
+            bridge.PassQAData(qaData);
+        }
+        // return activityContents[0].GetData();
+
+    }
+
+
     public void CheckFunc(){
         Debug.Log($"In BlendedOperations CheckFunc");
     }

@@ -34,9 +34,13 @@ public class QAManager : MonoBehaviour
         }
     }
 
+    public List<ActivityContent> GetCurrentActivityContents(){
+        return currentSlideActivityContents;
+    }
+
     ActivityContent GetActivity(int activityNo){
-        if(activityNo > (currentSlideActivityContents.Count - 1)) return null;
-        
+        if(activityNo > (currentSlideActivityContents.Count - 1)) return null; 
+
         return currentSlideActivityContents[activityNo];
     }
 

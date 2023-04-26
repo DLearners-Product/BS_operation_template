@@ -30,6 +30,9 @@ public class Bridge : MonoBehaviour
 
     [DllImport("__Internal")]
     private static extern void MarkActivityCompleted(string activityScoreData);
+
+    [DllImport("__Internal")]
+    private static extern void SendCurrentQAData(string activityData);
 #endif
 
     string[] slide_name;
@@ -135,6 +138,12 @@ public class Bridge : MonoBehaviour
         Debug.Log("Actvity Score Data : "+activityScoreData);
 #if UNITY_WEBGL && !UNITY_EDITOR
         MarkActivityCompleted(activityScoreData);
+#endif
+    }
+
+    public void PassQAData(string qaData){
+#if UNITY_WEBGL && !UNITY_EDITOR
+        SendCurrentQAData(qaData);
 #endif
     }
 }

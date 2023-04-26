@@ -28,6 +28,10 @@ mergeInto(LibraryManager.library, {
 
     MarkActivityCompleted : function(activityScoreData){
         blendedActivityIsCompleted(UTF8ToString(activityScoreData));
+    },
+
+    SendCurrentQAData : function(qaData){
+        GetCurrentActivityQAData(UTF8ToString(qaData));
     }
 
 });
