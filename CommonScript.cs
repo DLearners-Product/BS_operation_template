@@ -176,7 +176,7 @@ public class Component{
     }
 
     string GetAudioBS64(){
-        if(audioClip == null) return "";
+        if(audioClip == null || audioData == null) return "";
 
         byte[] bytes = new byte[audioData.Length * 2];
         int index = 0;
