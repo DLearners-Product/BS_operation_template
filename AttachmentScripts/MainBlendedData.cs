@@ -113,10 +113,12 @@ public class MainBlendedData : MonoBehaviour
     }
 
     private void OnDrawGizmos() {
+#if UNITY_EDITOR
         if(!Application.isPlaying){
             UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
             UnityEditor.SceneView.RepaintAll();
         }
+#endif
     }
 
     public string[] GetStringData(string dataName){
