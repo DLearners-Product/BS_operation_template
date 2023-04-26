@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -290,11 +290,15 @@ public class ActivityContent{
         switch(questionType){
             case QuestionType.Static:
                 activityData += ", ";
+                activityData += $"\"Question Type\":\"{staticQA.questionType.ToString()}\", ";
+                activityData += $"\"Option Type\":\"{staticQA.optionType.ToString()}\", ";
                 activityData += $"\"QA\":"+staticQA.GetQAData()+", ";
                 activityData += $"\"Option\":"+staticQA.GetOptionData();
                 break;
             case QuestionType.Dynamic:
                 activityData += ", ";
+                activityData += $"\"Question Type\":\"{dynamicQA.questionType.ToString()}\", ";
+                activityData += $"\"Option Type\":\"{dynamicQA.optionType.ToString()}\", ";
                 activityData += $"\"QA\":"+dynamicQA.GetQAData();
                 break;
         }
