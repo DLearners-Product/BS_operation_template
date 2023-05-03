@@ -245,7 +245,7 @@ public class QAO{
 [Serializable]
 public class AdditionalComponent{
     public string key;
-    public QuestionType dataType;
+    public FileType dataType;
     public Component value;
     string activityContent;
 
