@@ -112,8 +112,8 @@ public enum QuestionType{
 
 [Serializable]
 public class Component{
-    public int id=0;
     public string text;
+    public int id=0;
     public Sprite _sprite;
     public Texture2D texture2D  { get; private set; }
     public AudioClip audioClip;
