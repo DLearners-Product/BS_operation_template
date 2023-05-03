@@ -82,7 +82,13 @@ public class QAManager : MonoBehaviour
 
     public Dictionary<string, Component> GetAdditionalField(int activityNo){
         ActivityContent currentSlideActivityContent = currentSlideActivityContents[activityNo];
-        List<AdditionalComponent> additionalComponents = currentSlideActivityContent.staticQA.additionalFields;
+
+        List<AdditionalComponent> additionalComponents = new List<AdditionalComponent>();
+        if (currentSlideActivityContent.questionType == QuestionType.Static){
+            additionalComponents = currentSlideActivityContent.staticQA.additionalFields;
+        }else if(currentSlideActivityContent.questionType == QuestionType.Dynamic){
+            additionalComponents = currentSlideActivityContent.dynamicQA.additionalFields;
+        }
 
         for(int i=0; i<additionalComponents.Count; i++){
             additionalField.Add(additionalComponents[i].key, additionalComponents[i].value);
