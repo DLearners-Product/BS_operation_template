@@ -163,7 +163,7 @@ public class BlendedOperations : MonoBehaviour
 
     public void AddButtonToSyllabifyingTC(){
 
-        if(!Main_Blended.OBJ_main_blended.HAS_SYLLABLE[Main_Blended.OBJ_main_blended.levelno]) return;
+        if(!MainBlendedData.instance.slideDatas[Main_Blended.OBJ_main_blended.levelno].HAS_SYLLABLE) return;
 
         List<TextComponent> textComponentData = MainBlendedData.instance.slideDatas[Main_Blended.OBJ_main_blended.levelno].textComponents;
 
