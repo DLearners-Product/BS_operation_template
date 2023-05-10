@@ -124,7 +124,7 @@ public class Component{
     public void UpdateAssets(){
         UpdateTextureData();
 
-        UpdateAudioData();
+        // UpdateAudioData();
     }
 
     Texture2D ConvertSpriteToTexture(Sprite sprite)
