@@ -13,13 +13,9 @@ public class QAManager : MonoBehaviour
     private void Awake() {
         if(instance == null)
             instance = this;
-    }
-    
-    void Start()
-    {
         additionalField = new Dictionary<string, Component>();
     }
-
+    
     public void UpdateActivityQuestion(){
         currentSlideActivityContents?.Clear();
         currentSlideNum = Main_Blended.OBJ_main_blended.levelno;
@@ -51,6 +47,27 @@ public class QAManager : MonoBehaviour
                 return currentSlideActivityContent.staticQA.questions[questionNo].question;
             case QuestionType.Dynamic:
                 return currentSlideActivityContent.dynamicQA.questions[questionNo].question;
+            default:
+                return null;
+        }
+    }
+
+    public Component[] GetAllQuestions(int activityNo){
+        ActivityContent currentSlideActivityContent = currentSlideActivityContents[activityNo];
+        Component[] questions;
+        switch(currentSlideActivityContent.questionType){
+            case QuestionType.Static:
+                questions = new Component[currentSlideActivityContent.staticQA.questions.Length];
+                for(int i=0; i<questions.Length; i++){
+                    questions[i] = currentSlideActivityContent.staticQA.questions[i].question;
+                }
+                return questions;
+            case QuestionType.Dynamic:
+                questions = new Component[currentSlideActivityContent.dynamicQA.questions.Length];
+                for(int i=0; i<questions.Length; i++){
+                    questions[i] = currentSlideActivityContent.dynamicQA.questions[i].question;
+                }
+                return questions;
             default:
                 return null;
         }

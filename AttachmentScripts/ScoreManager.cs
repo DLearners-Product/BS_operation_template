@@ -16,7 +16,7 @@ public class ScoreManager : MonoBehaviour
             instance = this;
     }
 
-    private void OnEnable() {
+    private void Start() {
         InitializeLessonActivityData(MainBlendedData.instance.slideDatas.Count);
         // InitializeLessonActivityData(Main_Blended.OBJ_main_blended.GA_levelsIG.Length);
     }
