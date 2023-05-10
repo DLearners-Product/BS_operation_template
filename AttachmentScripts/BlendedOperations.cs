@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
@@ -193,6 +193,7 @@ public class BlendedOperations : MonoBehaviour
         // string dataToSyllabify = EventSystem.current.currentSelectedGameObject.gameObject.name;
         Debug.Log("SendDataToSylabify ...");
         Debug.Log(dataToSyllabify);
+        dataToSyllabify = Regex.Replace(dataToSyllabify, "<.*?>", "");
         bridge.SyllabyfyText(dataToSyllabify);
     }
 
