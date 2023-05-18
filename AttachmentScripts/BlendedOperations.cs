@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
@@ -38,7 +38,7 @@ public class BlendedOperations : MonoBehaviour
 
 #region EXTERNAL_JS_INVOKE_FUNCTIONS
 
-    public void SetBlendedData(string blendedData){
+    public void JS_CALL_SetBlendedData(string blendedData){
         // Debug.Log("From Unity ");
         // Debug.Log(blendedData);
         // Debug.Log("------------------------------------------------------------");
@@ -66,7 +66,7 @@ public class BlendedOperations : MonoBehaviour
         Main_Blended.OBJ_main_blended.THI_cloneLevels();
     }
 
-    public void GetBlendedData(){
+    public void JS_CALL_GetBlendedData(){
         string blendedData = "[";
         List<Slide> slideDataContainer = MainBlendedData.instance.slideDatas;
 
@@ -95,15 +95,14 @@ public class BlendedOperations : MonoBehaviour
         bridge.SendBlendedContentData(blendedData);
     }
 
-    // Called from external JS
-    public void GetActivityScoreData(){
+    public void JS_CALL_GetActivityScoreData(){
         Debug.Log($"Came to GetActivityScoreData");
         string scoreData = ScoreManager.instance.GetActivityData();
         bridge.SendActivityScoreData(scoreData);
         ScoreManager.instance.ResetActivityData();
     }
 
-    public void GetActivityContentData(){
+    public void JS_CALL_GetActivityContentData(){
         // string filePath = "ActivityContent.txt";
         string activityOerallData = ActivityContentManager.instance.GetOverallData();
         // using(StreamWriter writer = new StreamWriter(filePath)){
@@ -112,7 +111,7 @@ public class BlendedOperations : MonoBehaviour
         bridge.PassActivityOverallContent(activityOerallData);
     }
 
-    public void GetActivityQA(){
+    public void JS_CALL_GetActivityQA(){
         Debug.Log("GetActivityQA");
         // string activityData = "";
         List<ActivityContent> activityContents = QAManager.instance.GetCurrentActivityContents();
@@ -130,11 +129,14 @@ public class BlendedOperations : MonoBehaviour
             bridge.PassQAData(qaData);
         }
         // return activityContents[0].GetData();
-
     }
 
+    public void JS_CALL_SetQAActivity(string qaData){
+        JSONNode node = JSON.Parse(qaData);
+        ActivityContentManager.instance.Clear();
+    }
 
-    public void CheckFunc(){
+    public void JS_CALL_CheckFunc(){
         Debug.Log($"In BlendedOperations CheckFunc");
     }
 #endregion
