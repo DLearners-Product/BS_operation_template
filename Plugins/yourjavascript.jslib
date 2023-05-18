@@ -32,6 +32,10 @@ mergeInto(LibraryManager.library, {
 
     SendCurrentQAData : function(qaData){
         GetCurrentActivityQAData(UTF8ToString(qaData));
+    },
+
+    SendOverallActivityContentData : function(contentData){
+        GetActivityContentData(UTF8ToString(contentData));
     }
 
 });

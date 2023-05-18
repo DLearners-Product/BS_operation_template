@@ -33,6 +33,9 @@ public class Bridge : MonoBehaviour
 
     [DllImport("__Internal")]
     private static extern void SendCurrentQAData(string activityData);
+
+    [DllImport("__Internal")]
+    private static extern void SendOverallActivityContentData(string activityContent);
 #endif
 
     string[] slide_name;
@@ -100,8 +103,8 @@ public class Bridge : MonoBehaviour
     SetBlendedData(htmlJson);
     TeacherInst(xValue);
 #endif
+    }
 
-    }    
     public void getGameName()
     {
         gameName = Main_Blended.OBJ_main_blended.GameName;
@@ -111,7 +114,6 @@ public class Bridge : MonoBehaviour
 #if UNITY_WEBGL && !UNITY_EDITOR
     Game(gameName);
 #endif
-
     }
 
     public void SyllabyfyText(string dataToSyllabify)
@@ -144,6 +146,12 @@ public class Bridge : MonoBehaviour
     public void PassQAData(string qaData){
 #if UNITY_WEBGL && !UNITY_EDITOR
         SendCurrentQAData(qaData);
+#endif
+    }
+
+    public void PassActivityOverallContent(string activityOverallContent){
+#if UNITY_WEBGL && !UNITY_EDITOR
+        SendOverallActivityContentData(activityOverallContent);
 #endif
     }
 }
