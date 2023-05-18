@@ -131,10 +131,10 @@ public class BlendedOperations : MonoBehaviour
         // return activityContents[0].GetData();
     }
 
-    public void JS_CALL_SetQAActivity(string qaData){
-        JSONNode node = JSON.Parse(qaData);
-        ActivityContentManager.instance.Clear();
-    }
+    // public void JS_CALL_SetQAActivity(string qaData){
+    //     JSONNode node = JSON.Parse(qaData);
+    //     ActivityContentManager.instance.Clear();
+    // }
 
     public void JS_CALL_CheckFunc(){
         Debug.Log($"In BlendedOperations CheckFunc");
