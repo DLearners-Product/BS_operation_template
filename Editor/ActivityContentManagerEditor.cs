@@ -58,6 +58,8 @@ public class ActivityContentManagerEditor : Editor
 
             SerializedProperty activityContent = _activityContents.GetArrayElementAtIndex(i);
 
+            if(activityContent == null) continue;
+
             SerializedProperty questionType = activityContent.FindPropertyRelative("questionType");
 
             SerializedProperty slideNo = activityContent.FindPropertyRelative("slideNo");
