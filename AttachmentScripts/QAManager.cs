@@ -19,8 +19,12 @@ public class QAManager : MonoBehaviour
     public void UpdateActivityQuestion(){
         currentSlideActivityContents?.Clear();
         currentSlideNum = Main_Blended.OBJ_main_blended.levelno;
-        if(activityContents == null)
+        if(activityContents == null){
+            Debug.Log($"is if statement");
             activityContents = ActivityContentManager.instance.activityContents;
+        }else{
+            Debug.Log($"in else statement");
+        }
         
         foreach (var activityContent in activityContents)
         {
