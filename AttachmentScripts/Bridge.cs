@@ -30,6 +30,12 @@ public class Bridge : MonoBehaviour
 
     [DllImport("__Internal")]
     private static extern void MarkActivityCompleted(string activityScoreData);
+
+    [DllImport("__Internal")]
+    private static extern void SendCurrentQAData(string activityData);
+
+    [DllImport("__Internal")]
+    private static extern void SendOverallActivityContentData(string activityContent);
 #endif
 
     string[] slide_name;
@@ -52,23 +58,32 @@ public class Bridge : MonoBehaviour
 #if !UNITY_EDITOR && UNITY_WEBGL
         WebGLInput.captureAllKeyboardInput = true;
 #endif
-        slide_name = new string[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        slideInst = new string[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        videoSlides = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        worksheetSlides = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        syllableSlides = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        grammerSlides = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        activitySlides = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
-        isManualActivity = new bool[Main_Blended.OBJ_main_blended.MAX_SLIDES];
+        slide_name = new string[MainBlendedData.instance.slideDatas.Count];
+        slideInst = new string[MainBlendedData.instance.slideDatas.Count];
+        videoSlides = new bool[MainBlendedData.instance.slideDatas.Count];
+        worksheetSlides = new bool[MainBlendedData.instance.slideDatas.Count];
+        syllableSlides = new bool[MainBlendedData.instance.slideDatas.Count];
+        grammerSlides = new bool[MainBlendedData.instance.slideDatas.Count];
+        activitySlides = new bool[MainBlendedData.instance.slideDatas.Count];
+        isManualActivity = new bool[MainBlendedData.instance.slideDatas.Count];
 
-        slide_name = Main_Blended.OBJ_main_blended.SLIDE_NAMES;
-        slideInst = Main_Blended.OBJ_main_blended.TEACHER_INSTRUCTION;
-        videoSlides = Main_Blended.OBJ_main_blended.HAS_VIDEO;
-        worksheetSlides = Main_Blended.OBJ_main_blended.HAS_WORKSHEET;
-        syllableSlides = Main_Blended.OBJ_main_blended.HAS_SYLLABLE;
-        grammerSlides = Main_Blended.OBJ_main_blended.HAS_GRAMMER;
-        activitySlides = Main_Blended.OBJ_main_blended.HAS_ACTIVITY;
-        isManualActivity = Main_Blended.OBJ_main_blended.IS_MANUAL_ACTIVITY;
+        // slide_name = Main_Blended.OBJ_main_blended.SLIDE_NAMES;
+        // slideInst = Main_Blended.OBJ_main_blended.TEACHER_INSTRUCTION;
+        // videoSlides = Main_Blended.OBJ_main_blended.HAS_VIDEO;
+        // worksheetSlides = Main_Blended.OBJ_main_blended.HAS_WORKSHEET;
+        // syllableSlides = Main_Blended.OBJ_main_blended.HAS_SYLLABLE;
+        // grammerSlides = Main_Blended.OBJ_main_blended.HAS_GRAMMER;
+        // activitySlides = Main_Blended.OBJ_main_blended.HAS_ACTIVITY;
+        // isManualActivity = Main_Blended.OBJ_main_blended.IS_MANUAL_ACTIVITY;
+
+        slide_name = MainBlendedData.instance.GetStringData("SLIDE_NAMES");
+        slideInst = MainBlendedData.instance.GetStringData("TEACHER_INSTRUCTION");
+        videoSlides = MainBlendedData.instance.GetBoolData("HAS_VIDEO");
+        worksheetSlides = MainBlendedData.instance.GetBoolData("HAS_WORKSHEET");
+        syllableSlides = MainBlendedData.instance.GetBoolData("HAS_SYLLABLE");
+        grammerSlides = MainBlendedData.instance.GetBoolData("HAS_GRAMMER");
+        activitySlides = MainBlendedData.instance.GetBoolData("HAS_ACTIVITY");
+        isManualActivity = MainBlendedData.instance.GetBoolData("IS_MANUAL_ACTIVITY");
 
         GetTeacherInst();
         getGameName();
@@ -88,8 +103,8 @@ public class Bridge : MonoBehaviour
     SetBlendedData(htmlJson);
     TeacherInst(xValue);
 #endif
+    }
 
-    }    
     public void getGameName()
     {
         gameName = Main_Blended.OBJ_main_blended.GameName;
@@ -99,7 +114,6 @@ public class Bridge : MonoBehaviour
 #if UNITY_WEBGL && !UNITY_EDITOR
     Game(gameName);
 #endif
-
     }
 
     public void SyllabyfyText(string dataToSyllabify)
@@ -126,6 +140,18 @@ public class Bridge : MonoBehaviour
         Debug.Log("Actvity Score Data : "+activityScoreData);
 #if UNITY_WEBGL && !UNITY_EDITOR
         MarkActivityCompleted(activityScoreData);
+#endif
+    }
+
+    public void PassQAData(string qaData){
+#if UNITY_WEBGL && !UNITY_EDITOR
+        SendCurrentQAData(qaData);
+#endif
+    }
+
+    public void PassActivityOverallContent(string activityOverallContent){
+#if UNITY_WEBGL && !UNITY_EDITOR
+        SendOverallActivityContentData(activityOverallContent);
 #endif
     }
 }

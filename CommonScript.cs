@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using SimpleJSON;
+using System.IO;
 
 [Serializable]
 public class CommonScript
@@ -21,6 +23,15 @@ public class Slide{
     public string name;
     public GameObject slideObject;
     public List<TextComponent> textComponents;
+    public string slideName;
+    public string teacherInstruction;
+    public string activityInstruction;
+    public bool HAS_VIDEO,
+                HAS_WORKSHEET,
+                HAS_SYLLABLE,
+                HAS_GRAMMER,
+                HAS_ACTIVITY,
+                IS_MANUAL_ACTIVITY;
 }
 
 [Serializable]
@@ -53,18 +64,19 @@ public class TextComponentData{
 [Serializable]
 public class SlideActivityData{
     public string question;
-    public int questionNo;
+    public int questionID = 0;
+    public int answerID = 0;
     public int tries = 0;
     public int failures = 0;
     public int score = 0;
     public string answer;
 
     public SlideActivityData(int qNo){
-        this.questionNo = qNo;
+        this.questionID = qNo;
     }
 
     public SlideActivityData(int qNo, string question){
-        this.questionNo = qNo;
+        this.questionID = qNo;
         this.question = question;
     }
 
@@ -80,5 +92,157 @@ public class SlideActivityData{
 
 [Serializable]
 public class BlendedSlideActivityData{
-    public SlideActivityData[] slideActivities;
+    public List<SlideActivityData> slideActivities = new List<SlideActivityData>();
 }
+
+public enum FileType{
+    None,
+    Text,
+    Image,
+    Audio
+}
+
+public enum QuestionType{
+    None,
+    Static,
+    Dynamic
+}
+
+#region GROUP_IMAGE
+
+[Serializable]
+public class Component{
+    public string text;
+    public int id=0;
+    public Sprite _sprite;
+    public Texture2D texture2D  { get; private set; }
+    public AudioClip audioClip;
+    int width, height;
+    float[] audioData;
+    int _aduioSample, _audioChannel, _audioFrequency;
+
+    public void UpdateAssets(){
+        UpdateTextureData();
+
+        // UpdateAudioData();
+    }
+
+    Texture2D ConvertSpriteToTexture(Sprite sprite)
+    {
+        try{
+            // if(sprite.rect.width != sprite.texture.width){
+                Texture2D newText = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height);
+                Color[] colors = newText.GetPixels();
+                Color[] newColors = sprite.texture.GetPixels((int)System.Math.Ceiling(sprite.textureRect.x),
+                    (int)System.Math.Ceiling(sprite.textureRect.y),
+                    (int)System.Math.Ceiling(sprite.textureRect.width),
+                    (int)System.Math.Ceiling(sprite.textureRect.height));
+                Debug.Log(colors.Length+"_"+ newColors.Length);
+                newText.SetPixels(newColors);
+                newText.Apply();
+                return newText;
+            // }else{
+            //     Debug.Log("In else part");
+            //     return sprite.texture;
+            // }
+        }catch{
+            Debug.Log("In catch");
+            return sprite.texture;
+        }
+    }
+
+    void UpdateTextureData(){
+        if(_sprite == null) {
+            width = 0;
+            height = 0;
+            return;
+        }
+
+        width = (int)(_sprite.rect.width);
+        height = (int)(_sprite.rect.height);
+    }
+
+    void UpdateAudioData(){
+        if(audioClip == null) {
+            audioData = null;
+            return;
+        }
+
+        _aduioSample = audioClip.samples;
+        _audioChannel = audioClip.channels;
+        _audioFrequency = audioClip.frequency;
+        audioData = new float[_aduioSample * _audioChannel];
+        audioClip.GetData(audioData, 0);
+    }
+
+    string GetAudioBS64(){
+        if(audioClip == null || audioData == null) return "";
+
+        byte[] bytes = new byte[audioData.Length * 2];
+        int index = 0;
+        foreach (float sample in audioData) {
+            short convertedSample = (short) (sample * short.MaxValue);
+            BitConverter.GetBytes(convertedSample).CopyTo(bytes, index);
+            index += 2;
+        }
+
+        using (MemoryStream stream = new MemoryStream()) {
+            using (BinaryWriter writer = new BinaryWriter(stream)) {
+                writer.Write(new char[4] { 'R', 'I', 'F', 'F' });
+                writer.Write(36 + bytes.Length);
+                writer.Write(new char[4] { 'W', 'A', 'V', 'E' });
+                writer.Write(new char[4] { 'f', 'm', 't', ' ' });
+                writer.Write(16);
+                writer.Write((ushort) 1);
+                writer.Write((ushort) _audioChannel);
+                writer.Write(_audioFrequency);
+                writer.Write(_audioFrequency * _audioChannel * 2);
+                writer.Write((ushort) (_audioChannel * 2));
+                writer.Write((ushort) 16);
+                writer.Write(new char[4] { 'd', 'a', 't', 'a' });
+                writer.Write(bytes.Length);
+                writer.Write(bytes);
+            }
+            byte[] wavBytes = stream.ToArray();
+            return Convert.ToBase64String(wavBytes);
+        }
+    }
+
+    string GetTextureBS64(){
+        if(texture2D == null) return "";
+        
+        byte[] bytes;
+        // Texture2D texture = ConvertSpriteToTexture(_sprite);
+        bytes = texture2D.EncodeToPNG();
+
+        if(bytes == null){
+            Texture2D newText = new Texture2D(width, height, TextureFormat.RGBA32, false);
+            try{
+                newText.SetPixels(texture2D.GetPixels());
+                newText.Apply();
+                bytes = newText.EncodeToPNG();
+            }catch{
+                newText.SetPixels32(texture2D.GetPixels32());
+                newText.Apply();
+                bytes = newText.EncodeToPNG();
+            }
+        }
+
+        string imgBase64 = Convert.ToBase64String(bytes);
+        return imgBase64;
+    }
+
+    public string GetComponentStringfyData(){
+        string responseData = "{";
+        responseData += $"\"id\":{id}, \"text\":\"{text}\", \"image\":\"{GetTextureBS64()}\", \"image-width\":\"{width}\", \"image-height\":\"{height}\", \"audio\":\"{GetAudioBS64()}\"";
+        responseData +="}";
+        return responseData;
+    }
+}
+
+[Serializable]
+public class OptionComponent : Component{
+    public bool isAnswer;
+}
+
+#endregion

@@ -23,11 +23,19 @@ mergeInto(LibraryManager.library, {
     },
 
     PassBlendedContentDataToDB : function(blendedContentData){
-        send_blended_data(blendedContentData);
+        send_blended_data(UTF8ToString(blendedContentData));
     },
 
     MarkActivityCompleted : function(activityScoreData){
         blendedActivityIsCompleted(UTF8ToString(activityScoreData));
+    },
+
+    SendCurrentQAData : function(qaData){
+        GetCurrentActivityQAData(UTF8ToString(qaData));
+    },
+
+    SendOverallActivityContentData : function(contentData){
+        GetActivityContentData(UTF8ToString(contentData));
     }
 
 });

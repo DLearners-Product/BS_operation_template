@@ -16,18 +16,16 @@ public class MainBlendedData : MonoBehaviour
     int currentSlideIndex = 0;
 
     private void Awake() {
-        textObjects = new List<GameObject>();
-        oldSlideData = new List<Slide>();
-
         if(instance == null){
             instance = this;
         }
-        Debug.Log("Awake called..");
+
+        textObjects = new List<GameObject>();
+        oldSlideData = new List<Slide>();
     }
 
     void Start()
     {
-        Debug.Log($"start method called");
         slideDataCounts = new List<int>();
 
         if(slideDatas == null || slideDatas.Count <= 0) return;
@@ -114,8 +112,59 @@ public class MainBlendedData : MonoBehaviour
         }
     }
 
-    private void OnValidate() {
+    private void OnDrawGizmos() {
+#if UNITY_EDITOR
+        if(!Application.isPlaying){
+            UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+            UnityEditor.SceneView.RepaintAll();
+        }
+#endif
+    }
 
+    public string[] GetStringData(string dataName){
+        List<string> stringData = new List<string>();
+        for(int i=0; i<slideDatas.Count; i++){
+            switch(dataName){
+                case "SLIDE_NAMES":
+                    stringData.Add(slideDatas[i].slideName);
+                    break;
+                case "TEACHER_INSTRUCTION":
+                    stringData.Add(slideDatas[i].teacherInstruction);
+                    break;
+            }
+        }
+        return stringData.ToArray();
+    }
+
+    public bool[] GetBoolData(string dataName){
+        List<bool> boolData = new List<bool>();
+        for(int i=0; i<slideDatas.Count; i++){
+            switch(dataName){
+                case "HAS_VIDEO":
+                    boolData.Add(slideDatas[i].HAS_VIDEO);
+                    break;
+                case "HAS_WORKSHEET":
+                    boolData.Add(slideDatas[i].HAS_WORKSHEET);
+                    break;
+                case "HAS_SYLLABLE":
+                    boolData.Add(slideDatas[i].HAS_SYLLABLE);
+                    break;
+                case "HAS_GRAMMER":
+                    boolData.Add(slideDatas[i].HAS_GRAMMER);
+                    break;
+                case "HAS_ACTIVITY":
+                    boolData.Add(slideDatas[i].HAS_ACTIVITY);
+                    break;
+                case "IS_MANUAL_ACTIVITY":
+                    boolData.Add(slideDatas[i].IS_MANUAL_ACTIVITY);
+                    break;
+            }
+        }
+        return boolData.ToArray();
+    }
+
+    private void OnValidate() {
+        
     }
 
 }

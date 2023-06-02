@@ -5,9 +5,8 @@ using SimpleJSON;
 using System;
 using TMPro;
 using UnityEngine.UI;
-// using UnityEditor.Events;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
+using System.IO;
+using System.Text.RegularExpressions;
 
 public class BlendedOperations : MonoBehaviour
 {
@@ -39,7 +38,7 @@ public class BlendedOperations : MonoBehaviour
 
 #region EXTERNAL_JS_INVOKE_FUNCTIONS
 
-    public void SetBlendedData(string blendedData){
+    public void JS_CALL_SetBlendedData(string blendedData){
         // Debug.Log("From Unity ");
         // Debug.Log(blendedData);
         // Debug.Log("------------------------------------------------------------");
@@ -67,7 +66,7 @@ public class BlendedOperations : MonoBehaviour
         Main_Blended.OBJ_main_blended.THI_cloneLevels();
     }
 
-    public void GetBlendedData(){
+    public void JS_CALL_GetBlendedData(){
         string blendedData = "[";
         List<Slide> slideDataContainer = MainBlendedData.instance.slideDatas;
 
@@ -94,18 +93,50 @@ public class BlendedOperations : MonoBehaviour
         blendedData += "]";
 
         bridge.SendBlendedContentData(blendedData);
-        // Application.ExternalCall("send_blended_data", blendedData);
     }
 
-    // Called from external JS
-    public void GetActivityScoreData(){
+    public void JS_CALL_GetActivityScoreData(){
         Debug.Log($"Came to GetActivityScoreData");
-        string scoreData =  ScoreManager.instance.GetActivityData();
+        string scoreData = ScoreManager.instance.GetActivityData();
         bridge.SendActivityScoreData(scoreData);
         ScoreManager.instance.ResetActivityData();
     }
 
-    public void CheckFunc(){
+    public void JS_CALL_GetActivityContentData(){
+        // string filePath = "ActivityContent.txt";
+        string activityOerallData = ActivityContentManager.instance.GetOverallData();
+        // using(StreamWriter writer = new StreamWriter(filePath)){
+        //     writer.WriteLine(activityOerallData);
+        // }
+        bridge.PassActivityOverallContent(activityOerallData);
+    }
+
+    public void JS_CALL_GetActivityQA(){
+        Debug.Log("GetActivityQA");
+        // string activityData = "";
+        List<ActivityContent> activityContents = QAManager.instance.GetCurrentActivityContents();
+        // for(int i=0; i<activityContents.Count; i++){
+        //     activityData += activityContents[i].GetData();
+        // }
+        string qaData = "";
+        if(activityContents.Count > 0){
+            Debug.Log("if part");
+            qaData = activityContents[0].GetData();
+            Debug.Log(qaData);
+            bridge.PassQAData(qaData);
+        }else{
+            Debug.Log("else part");
+            bridge.PassQAData(qaData);
+        }
+        // return activityContents[0].GetData();
+    }
+
+    // public void JS_CALL_SetQAActivity(string qaData){
+    //     JSONNode node = JSON.Parse(qaData);
+    //     ActivityContentManager.instance.Clear();
+    // }
+
+    public void JS_CALL_CheckFunc(){
         Debug.Log($"In BlendedOperations CheckFunc");
     }
 #endregion
@@ -135,7 +166,7 @@ public class BlendedOperations : MonoBehaviour
 
     public void AddButtonToSyllabifyingTC(){
 
-        if(!Main_Blended.OBJ_main_blended.HAS_SYLLABLE[Main_Blended.OBJ_main_blended.levelno]) return;
+        if(!MainBlendedData.instance.slideDatas[Main_Blended.OBJ_main_blended.levelno].HAS_SYLLABLE) return;
 
         List<TextComponent> textComponentData = MainBlendedData.instance.slideDatas[Main_Blended.OBJ_main_blended.levelno].textComponents;
 
@@ -165,6 +196,7 @@ public class BlendedOperations : MonoBehaviour
         // string dataToSyllabify = EventSystem.current.currentSelectedGameObject.gameObject.name;
         Debug.Log("SendDataToSylabify ...");
         Debug.Log(dataToSyllabify);
+        dataToSyllabify = Regex.Replace(dataToSyllabify, "<.*?>", "");
         bridge.SyllabyfyText(dataToSyllabify);
     }
 
