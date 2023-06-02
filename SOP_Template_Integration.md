@@ -33,7 +33,7 @@ Assets/
   - Emter `Teacher Instruction`
   - Enter `Activity Instruction`
   - Mark ``bool``s accordingly if that slide has any of it.
-### ActivityContentManager.cs
+### ActivityContentManager.cskkkf
 This script contains all activity Questions, Options and datatypes.
   - Put all question and option assets in Activity object.
 
