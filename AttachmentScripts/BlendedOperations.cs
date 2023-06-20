@@ -36,10 +36,6 @@ public class BlendedOperations : MonoBehaviour
         bridge.NotifyActivityIsCompleted(activityScore);
     }
 
-    public void SetBlendedData(){
-        JS_CALL_SetQAActivity(tmpJsonData);
-    }
-
     void AssignStaticQuestionsIds(JSONNode quesJSONData, JSONNode optionJSONData, StaticQA staticQA){
         for(int i=0; i<staticQA.questions.Length; i++){
             for(int j=0; j<quesJSONData.Count; j++){
