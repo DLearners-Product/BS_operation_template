@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
@@ -34,6 +34,47 @@ public class BlendedOperations : MonoBehaviour
     public void NotifyActivityCompleted(){
         string activityScore = ScoreManager.instance.GetActivityData();
         bridge.NotifyActivityIsCompleted(activityScore);
+    }
+
+    void AssignStaticQuestionsIds(JSONNode quesJSONData, JSONNode optionJSONData, StaticQA staticQA){
+        for(int i=0; i<staticQA.questions.Length; i++){
+            for(int j=0; j<quesJSONData.Count; j++){
+                if(staticQA.questions[i].question.text == quesJSONData[j]["question_text"]){
+                    staticQA.questions[i].question.id = quesJSONData[j]["question_id"];
+                }
+            }
+        }
+
+        for(int i=0; i<staticQA.options.Length; i++){
+            for(int j=0; j<optionJSONData.Count; j++){
+                if(staticQA.options[i].text == optionJSONData[j]["option_text"]){
+                    staticQA.options[i].id = optionJSONData[j]["option_id"];
+                }
+            }
+        }
+    }
+
+    void AssignDynamicOptionIds(JSONNode jsonData, OptionComponent[] options){
+        for(int i=0; i<options.Length; i++){
+            for(int j=0; j<jsonData.Count; j++){
+                if(options[i].text == jsonData[j]["option_text"]){
+                    options[i].id = jsonData[j]["option_id"];
+                }
+            }
+        }
+    }
+
+    void AssignDynamicQuestionIds(JSONNode jsonData, DynamicQA dynamicQA){
+        for(int i=0; i<dynamicQA.questions.Length; i++){
+            for(int j=0; j<jsonData.Count; j++){
+                if(dynamicQA.questions[i].question.text == jsonData[j]["question_text"]){
+                    // Debug.Log("-------> "+dynamicQA.questions[i].question.text);
+                    dynamicQA.questions[i].question.id = jsonData[j]["question_id"];
+                    // Debug.Log("Ques ID --> "+dynamicQA.questions[i].question.id+",  "+jsonData[j]["question_id"]);
+                    AssignDynamicOptionIds(jsonData[j]["options"], dynamicQA.questions[i].options);
+                }
+            }
+        }
     }
 
 #region EXTERNAL_JS_INVOKE_FUNCTIONS
@@ -131,10 +172,27 @@ public class BlendedOperations : MonoBehaviour
         // return activityContents[0].GetData();
     }
 
-    // public void JS_CALL_SetQAActivity(string qaData){
-    //     JSONNode node = JSON.Parse(qaData);
-    //     ActivityContentManager.instance.Clear();
-    // }
+    public void JS_CALL_SetQAActivity(string qaData){
+        Debug.Log(qaData);
+        JSONNode jsonData = JSON.Parse(qaData);
+        ActivityContent[] activityContents = ActivityContentManager.instance.activityContents;
+        foreach (ActivityContent activityContent in activityContents)
+        {
+            for (int i=0; i<jsonData.Count; i++)
+            {
+                int slideIndex = int.Parse(jsonData[i]["slide_number"]) - 1;
+                // Debug.Log(activityContent.slideNo+" "+slideIndex+" || "+activityContent.questionType.ToString()+" "+jsonData[i]["qa_type"]);
+                if(activityContent.slideNo == slideIndex && activityContent.questionType.ToString() == jsonData[i]["qa_type"]){
+                    if(activityContent.questionType == QuestionType.Dynamic){
+                        AssignDynamicQuestionIds(jsonData[i]["questions"], activityContent.dynamicQA);
+                    }else if(activityContent.questionType == QuestionType.Static){
+                        AssignStaticQuestionsIds(jsonData[i]["questions"], jsonData[i]["options"], activityContent.staticQA);
+                    }
+                    break;
+                }
+            }
+        }
+    }
 
     public void JS_CALL_CheckFunc(){
         Debug.Log($"In BlendedOperations CheckFunc");

@@ -286,6 +286,7 @@ public class ActivityContent{
         activityData = "{";
         activityData += $"\"ActivityName\":\"{activityName}\", ";
         activityData += $"\"SlideIndex\":\"{slideNo.ToString()}\", ";
+        activityData += $"\"IsManualActivity\":\"{MainBlendedData.instance.slideDatas[slideNo].IS_MANUAL_ACTIVITY.ToString()}\", ";
         activityData += $"\"QAType\":\"{questionType.ToString()}\"";
         switch(questionType){
             case QuestionType.Static:
