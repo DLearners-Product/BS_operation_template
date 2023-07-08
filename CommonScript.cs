@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System;
 using SimpleJSON;
 using System.IO;
+using UnityEditor;
 
 [Serializable]
 public class CommonScript
@@ -115,11 +116,12 @@ public class Component{
     public string text;
     public int id=0;
     public Sprite _sprite;
-    public Texture2D texture2D  { get; private set; }
+    public Texture2D texture2D;
     public AudioClip audioClip;
     int width, height;
     float[] audioData;
     int _aduioSample, _audioChannel, _audioFrequency;
+    string textureBS64Text;
 
     public void UpdateAssets(){
         UpdateTextureData();
@@ -151,15 +153,41 @@ public class Component{
         }
     }
 
+    void Make2DTextureReadWriteEnabled(bool makeReadable=true){
+#if UNITY_EDITOR
+        if(texture2D != null && !texture2D.isReadable){
+            string assetPath = AssetDatabase.GetAssetPath( texture2D );
+            var tImporter = AssetImporter.GetAtPath( assetPath ) as TextureImporter;
+
+            if(makeReadable)
+                tImporter.isReadable = true;
+            else
+                tImporter.isReadable = false;
+
+            AssetDatabase.ImportAsset( assetPath );
+            AssetDatabase.Refresh();
+        }
+#endif
+    }
+
     void UpdateTextureData(){
-        if(_sprite == null) {
+#if UNITY_EDITOR
+        if(EditorApplication.isPlaying) return;
+        if(texture2D == null) {
             width = 0;
             height = 0;
             return;
         }
 
-        width = (int)(_sprite.rect.width);
-        height = (int)(_sprite.rect.height);
+        width = (int)(texture2D.width);
+        height = (int)(texture2D.height);
+
+        if(textureBS64Text == null){
+            Make2DTextureReadWriteEnabled();
+            textureBS64Text = GetTextureBS64();
+            Make2DTextureReadWriteEnabled(false);
+        }
+#endif
     }
 
     void UpdateAudioData(){
@@ -210,31 +238,36 @@ public class Component{
 
     string GetTextureBS64(){
         if(texture2D == null) return "";
-        
-        byte[] bytes;
+        // Debug.Log("came to GetTextureBS64................");
+        byte[] bytes = null;
         // Texture2D texture = ConvertSpriteToTexture(_sprite);
-        bytes = texture2D.EncodeToPNG();
-
-        if(bytes == null){
-            Texture2D newText = new Texture2D(width, height, TextureFormat.RGBA32, false);
-            try{
-                newText.SetPixels(texture2D.GetPixels());
-                newText.Apply();
-                bytes = newText.EncodeToPNG();
-            }catch{
-                newText.SetPixels32(texture2D.GetPixels32());
-                newText.Apply();
-                bytes = newText.EncodeToPNG();
+        try{
+            bytes = texture2D.EncodeToPNG();
+        }catch{
+            if(bytes == null){
+                Texture2D newText = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                try{
+                    newText.SetPixels(texture2D.GetPixels());
+                    newText.Apply();
+                    bytes = newText.EncodeToPNG();
+                }catch{
+                    newText.SetPixels32(texture2D.GetPixels32());
+                    newText.Apply();
+                    bytes = newText.EncodeToPNG();
+                }
             }
         }
 
-        string imgBase64 = Convert.ToBase64String(bytes);
+        string imgBase64 = "";
+        if(bytes != null){
+            imgBase64 = Convert.ToBase64String(bytes);
+        }
         return imgBase64;
     }
 
     public string GetComponentStringfyData(){
         string responseData = "{";
-        responseData += $"\"id\":{id}, \"text\":\"{text}\", \"image\":\"{GetTextureBS64()}\", \"image-width\":\"{width}\", \"image-height\":\"{height}\", \"audio\":\"{GetAudioBS64()}\"";
+        responseData += $"\"id\":{id}, \"text\":\"{text}\", \"image\":\"{textureBS64Text}\", \"image-width\":\"{width}\", \"image-height\":\"{height}\", \"audio\":\"{GetAudioBS64()}\"";
         responseData +="}";
         return responseData;
     }
