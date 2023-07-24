@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
@@ -41,6 +41,8 @@ public class BlendedOperations : MonoBehaviour
             for(int j=0; j<quesJSONData.Count; j++){
                 if(staticQA.questions[i].question.text == quesJSONData[j]["question_text"]){
                     staticQA.questions[i].question.id = quesJSONData[j]["question_id"];
+                    staticQA.questions[i].question.image_url = quesJSONData[j]["question_image"];
+                    staticQA.questions[i].question.audio_url = quesJSONData[j]["question_audio"];
                 }
             }
         }
@@ -49,6 +51,8 @@ public class BlendedOperations : MonoBehaviour
             for(int j=0; j<optionJSONData.Count; j++){
                 if(staticQA.options[i].text == optionJSONData[j]["option_text"]){
                     staticQA.options[i].id = optionJSONData[j]["option_id"];
+                    staticQA.options[i].image_url = optionJSONData[j]["question_image"];
+                    staticQA.options[i].audio_url = optionJSONData[j]["question_audio"];
                 }
             }
         }
@@ -59,6 +63,8 @@ public class BlendedOperations : MonoBehaviour
             for(int j=0; j<jsonData.Count; j++){
                 if(options[i].text == jsonData[j]["option_text"]){
                     options[i].id = jsonData[j]["option_id"];
+                    options[i].image_url = jsonData[j]["question_image"];
+                    options[i].audio_url = jsonData[j]["question_audio"];
                 }
             }
         }
@@ -70,6 +76,8 @@ public class BlendedOperations : MonoBehaviour
                 if(dynamicQA.questions[i].question.text == jsonData[j]["question_text"]){
                     // Debug.Log("-------> "+dynamicQA.questions[i].question.text);
                     dynamicQA.questions[i].question.id = jsonData[j]["question_id"];
+                    dynamicQA.questions[i].question.image_url = jsonData[j]["question_image"];
+                    dynamicQA.questions[i].question.audio_url = jsonData[j]["question_audio"];
                     // Debug.Log("Ques ID --> "+dynamicQA.questions[i].question.id+",  "+jsonData[j]["question_id"]);
                     AssignDynamicOptionIds(jsonData[j]["options"], dynamicQA.questions[i].options);
                 }
@@ -137,7 +145,6 @@ public class BlendedOperations : MonoBehaviour
     }
 
     public void JS_CALL_GetActivityScoreData(){
-        Debug.Log($"Came to GetActivityScoreData");
         string scoreData = ScoreManager.instance.GetActivityData();
         bridge.SendActivityScoreData(scoreData);
         ScoreManager.instance.ResetActivityData();
@@ -153,7 +160,6 @@ public class BlendedOperations : MonoBehaviour
     }
 
     public void JS_CALL_GetActivityQA(){
-        Debug.Log("GetActivityQA");
         // string activityData = "";
         List<ActivityContent> activityContents = QAManager.instance.GetCurrentActivityContents();
         // for(int i=0; i<activityContents.Count; i++){
@@ -161,12 +167,12 @@ public class BlendedOperations : MonoBehaviour
         // }
         string qaData = "";
         if(activityContents.Count > 0){
-            Debug.Log("if part");
+            // Debug.Log("if part");
             qaData = activityContents[0].GetData();
-            Debug.Log(qaData);
+            // Debug.Log(qaData);
             bridge.PassQAData(qaData);
         }else{
-            Debug.Log("else part");
+            // Debug.Log("else part");
             bridge.PassQAData(qaData);
         }
         // return activityContents[0].GetData();
@@ -252,8 +258,8 @@ public class BlendedOperations : MonoBehaviour
 
     public void SendDataToSylabify(string dataToSyllabify){
         // string dataToSyllabify = EventSystem.current.currentSelectedGameObject.gameObject.name;
-        Debug.Log("SendDataToSylabify ...");
-        Debug.Log(dataToSyllabify);
+        // Debug.Log("SendDataToSylabify ...");
+        // Debug.Log(dataToSyllabify);
         dataToSyllabify = Regex.Replace(dataToSyllabify, "<.*?>", "");
         bridge.SyllabyfyText(dataToSyllabify);
     }
