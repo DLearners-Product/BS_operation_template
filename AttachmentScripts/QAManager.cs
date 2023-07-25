@@ -31,6 +31,7 @@ public class QAManager : MonoBehaviour
     }
 
     public List<ActivityContent> GetCurrentActivityContents(){
+        UpdateActivityQuestion();
         return currentSlideActivityContents;
     }
 
