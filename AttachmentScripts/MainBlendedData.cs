@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +22,8 @@ public class MainBlendedData : MonoBehaviour
 
         textObjects = new List<GameObject>();
         oldSlideData = new List<Slide>();
+
+        Main_Blended.OBJ_main_blended.MAX_SLIDES = slideDatas.Count;
     }
 
     void Start()
