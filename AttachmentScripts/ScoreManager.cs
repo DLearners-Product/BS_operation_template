@@ -69,7 +69,7 @@ public class ScoreManager : MonoBehaviour
                 if(lessonGameActivityDatas[levelno].slideActivities[i].isEmpty()) continue;
 
                 activityData += lessonGameActivityDatas[levelno].slideActivities[i].getParsedJsonData();
-                if((i+1) < lessonGameActivityDatas[levelno].slideActivities.Count){
+                if((i+1) < lessonGameActivityDatas[levelno].slideActivities.Count && !lessonGameActivityDatas[levelno].slideActivities[i+1].isEmpty()){
                     activityData += ",";
                 }
             }
