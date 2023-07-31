@@ -71,17 +71,12 @@ public class BlendedOperations : MonoBehaviour
     }
 
     void AssignDynamicQuestionIds(JSONNode jsonData, DynamicQA dynamicQA){
-        for(int i=0; i<dynamicQA.questions.Length; i++){
-            for(int j=0; j<jsonData.Count; j++){
-                if(dynamicQA.questions[i].question.text == jsonData[j]["question_text"]){
-                    // Debug.Log("-------> "+dynamicQA.questions[i].question.text);
-                    dynamicQA.questions[i].question.id = jsonData[j]["question_id"];
-                    dynamicQA.questions[i].question.image_url = jsonData[j]["question_image"];
-                    dynamicQA.questions[i].question.audio_url = jsonData[j]["question_audio"];
-                    // Debug.Log("Ques ID --> "+dynamicQA.questions[i].question.id+",  "+jsonData[j]["question_id"]);
-                    AssignDynamicOptionIds(jsonData[j]["options"], dynamicQA.questions[i].options);
-                }
-            }
+        for(int i=0; i<jsonData.Count; i++){
+            int qIndex = Int32.Parse(jsonData[i]["question_flow_no"]) - 1;
+            dynamicQA.questions[qIndex].question.id = jsonData[i]["question_id"];
+            dynamicQA.questions[qIndex].question.image_url = jsonData[i]["question_image"];
+            dynamicQA.questions[qIndex].question.audio_url = jsonData[i]["question_audio"];
+            AssignDynamicOptionIds(jsonData[i]["options"], dynamicQA.questions[qIndex].options);
         }
     }
 
