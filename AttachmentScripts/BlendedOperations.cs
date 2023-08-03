@@ -41,6 +41,8 @@ public class BlendedOperations : MonoBehaviour
             for(int j=0; j<quesJSONData.Count; j++){
                 if(staticQA.questions[i].question.text == quesJSONData[j]["question_text"]){
                     staticQA.questions[i].question.id = quesJSONData[j]["question_id"];
+                    staticQA.questions[i].question.image_url = quesJSONData[j]["question_image"];
+                    staticQA.questions[i].question.audio_url = quesJSONData[j]["question_audio"];
                 }
             }
         }
@@ -49,6 +51,8 @@ public class BlendedOperations : MonoBehaviour
             for(int j=0; j<optionJSONData.Count; j++){
                 if(staticQA.options[i].text == optionJSONData[j]["option_text"]){
                     staticQA.options[i].id = optionJSONData[j]["option_id"];
+                    staticQA.options[i].image_url = optionJSONData[j]["question_image"];
+                    staticQA.options[i].audio_url = optionJSONData[j]["question_audio"];
                 }
             }
         }
@@ -59,21 +63,20 @@ public class BlendedOperations : MonoBehaviour
             for(int j=0; j<jsonData.Count; j++){
                 if(options[i].text == jsonData[j]["option_text"]){
                     options[i].id = jsonData[j]["option_id"];
+                    options[i].image_url = jsonData[j]["question_image"];
+                    options[i].audio_url = jsonData[j]["question_audio"];
                 }
             }
         }
     }
 
     void AssignDynamicQuestionIds(JSONNode jsonData, DynamicQA dynamicQA){
-        for(int i=0; i<dynamicQA.questions.Length; i++){
-            for(int j=0; j<jsonData.Count; j++){
-                if(dynamicQA.questions[i].question.text == jsonData[j]["question_text"]){
-                    // Debug.Log("-------> "+dynamicQA.questions[i].question.text);
-                    dynamicQA.questions[i].question.id = jsonData[j]["question_id"];
-                    // Debug.Log("Ques ID --> "+dynamicQA.questions[i].question.id+",  "+jsonData[j]["question_id"]);
-                    AssignDynamicOptionIds(jsonData[j]["options"], dynamicQA.questions[i].options);
-                }
-            }
+        for(int i=0; i<jsonData.Count; i++){
+            int qIndex = Int32.Parse(jsonData[i]["question_flow_no"]) - 1;
+            dynamicQA.questions[qIndex].question.id = jsonData[i]["question_id"];
+            dynamicQA.questions[qIndex].question.image_url = jsonData[i]["question_image"];
+            dynamicQA.questions[qIndex].question.audio_url = jsonData[i]["question_audio"];
+            AssignDynamicOptionIds(jsonData[i]["options"], dynamicQA.questions[qIndex].options);
         }
     }
 

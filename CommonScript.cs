@@ -118,6 +118,7 @@ public class Component{
     public Sprite _sprite;
     public Texture2D texture2D;
     public AudioClip audioClip;
+    public string image_url, audio_url;
     int width, height;
     float[] audioData;
     int _aduioSample, _audioChannel, _audioFrequency;
@@ -171,6 +172,7 @@ public class Component{
     }
 
     void UpdateTextureData(){
+#if UNITY_EDITOR
         if(EditorApplication.isPlaying) return;
         if(texture2D == null) {
             width = 0;
@@ -186,6 +188,7 @@ public class Component{
             textureBS64Text = GetTextureBS64();
             Make2DTextureReadWriteEnabled(false);
         }
+#endif
     }
 
     void UpdateAudioData(){
@@ -265,7 +268,10 @@ public class Component{
 
     public string GetComponentStringfyData(){
         string responseData = "{";
-        responseData += $"\"id\":{id}, \"text\":\"{text}\", \"image\":\"{textureBS64Text}\", \"image-width\":\"{width}\", \"image-height\":\"{height}\", \"audio\":\"{GetAudioBS64()}\"";
+        if(image_url == "" && audio_url == "")
+            responseData += $"\"id\":{id}, \"text\":\"{text}\", \"image\":\"{textureBS64Text}\", \"image-width\":\"{width}\", \"image-height\":\"{height}\", \"audio\":\"{GetAudioBS64()}\"";
+        else
+            responseData += $"\"id\":{id}, \"text\":\"{text}\", \"image\":\"{image_url}\", \"image-width\":\"{width}\", \"image-height\":\"{height}\", \"audio\":\"{audio_url}\"";
         responseData +="}";
         return responseData;
     }
