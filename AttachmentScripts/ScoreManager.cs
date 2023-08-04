@@ -79,6 +79,23 @@ public class ScoreManager : MonoBehaviour
         return activityData;
     }
 
+    public string GetActivityDataForDebug(int levelno = -1){
+        if(levelno == -1)
+            levelno = Main_Blended.OBJ_main_blended.levelno;
+        activityData = "[";
+        if(lessonGameActivityDatas[levelno].slideActivities != null){
+            for(int i=0; i < lessonGameActivityDatas[levelno].slideActivities.Count; i++){
+                activityData += lessonGameActivityDatas[levelno].slideActivities[i].getParsedJsonData();
+
+                if((i+1) < lessonGameActivityDatas[levelno].slideActivities.Count){
+                    activityData += ",";
+                }
+            }
+        }
+        activityData += "]";
+        return activityData;
+    }
+
     public void ResetActivityData(int levelno = -1){
         if(levelno == -1)
             levelno = Main_Blended.OBJ_main_blended.levelno;
