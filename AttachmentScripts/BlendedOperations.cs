@@ -195,6 +195,10 @@ public class BlendedOperations : MonoBehaviour
         }
     }
 
+    public void JS_CALL_ScoreDataDisplayAll()
+    {
+        Debug.Log($"{ScoreManager.instance.GetActivityDataForDebug()}");
+    }
     public void JS_CALL_CheckFunc(){
         Debug.Log($"In BlendedOperations CheckFunc");
     }
