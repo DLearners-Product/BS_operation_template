@@ -33,6 +33,7 @@ public class MainBlendedData : MonoBehaviour
         for(int i=0; i<slideDatas.Count; i++){
             oldSlideData.Add(slideDatas[i]);
         }
+        Main_Blended.OBJ_main_blended.MAX_SLIDES = slideDatas.Count;
     }
 
     void Update()

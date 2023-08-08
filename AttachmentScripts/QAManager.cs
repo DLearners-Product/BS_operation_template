@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,12 +19,8 @@ public class QAManager : MonoBehaviour
     public void UpdateActivityQuestion(){
         currentSlideActivityContents?.Clear();
         currentSlideNum = Main_Blended.OBJ_main_blended.levelno;
-        if(activityContents == null){
-            Debug.Log($"is if statement");
+        if(activityContents == null)
             activityContents = ActivityContentManager.instance.activityContents;
-        }else{
-            Debug.Log($"in else statement");
-        }
         
         foreach (var activityContent in activityContents)
         {
@@ -35,10 +31,11 @@ public class QAManager : MonoBehaviour
     }
 
     public List<ActivityContent> GetCurrentActivityContents(){
+        UpdateActivityQuestion();
         return currentSlideActivityContents;
     }
 
-    ActivityContent GetActivity(int activityNo){
+    public ActivityContent GetActivity(int activityNo){
         if(activityNo > (currentSlideActivityContents.Count - 1)) return null; 
 
         return currentSlideActivityContents[activityNo];
@@ -112,6 +109,8 @@ public class QAManager : MonoBehaviour
         }
 
         for(int i=0; i<additionalComponents.Count; i++){
+            if(!additionalField.ContainsKey(additionalComponents[i].key)) continue;
+
             additionalField.Add(additionalComponents[i].key, additionalComponents[i].value);
         }
 
