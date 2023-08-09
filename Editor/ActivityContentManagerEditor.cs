@@ -68,7 +68,7 @@ public class ActivityContentManagerEditor : Editor
 
             EditorGUILayout.PropertyField(slideNo);
             EditorGUILayout.PropertyField(activityName);
-            EditorGUILayout.PropertyField(questionType);
+            EditorGUILayout.PropertyField(questionType, new GUIContent("QA Type"));
 
             // Debug.Log("--- > " + questionType.enumNames[questionType.enumValueIndex]);
             switch(questionType.enumValueIndex){

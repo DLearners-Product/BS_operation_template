@@ -285,20 +285,22 @@ public class ActivityContent{
     public string GetData(){
         activityData = "{";
         activityData += $"\"ActivityName\":\"{activityName}\", ";
-        activityData += $"\"SlideIndex\":\"{slideNo.ToString()}\", ";
-        activityData += $"\"QAType\":\"{questionType.ToString()}\"";
+        activityData += $"\"SlideIndex\":\"{slideNo}\", ";
+        activityData += $"\"IsManualActivity\":\"{MainBlendedData.instance.slideDatas[slideNo].IsManualActivity()}\", ";
+        activityData += $"\"IsExceptionalActivity\":\"{MainBlendedData.instance.slideDatas[slideNo].IsExceptionalActivity()}\", ";
+        activityData += $"\"QAType\":\"{questionType}\"";
         switch(questionType){
             case QuestionType.Static:
                 activityData += ", ";
-                activityData += $"\"QuestionType\":\"{staticQA.questionType.ToString()}\", ";
-                activityData += $"\"OptionType\":\"{staticQA.optionType.ToString()}\", ";
-                activityData += $"\"QA\":"+staticQA.GetQAData()+", ";
+                activityData += $"\"QuestionType\":\"{staticQA.questionType}\", ";
+                activityData += $"\"OptionType\":\"{staticQA.optionType}\", ";
+                activityData += $"\"QA\":"+staticQA.GetQAData()+", "; 
                 activityData += $"\"Option\":"+staticQA.GetOptionData();
                 break;
             case QuestionType.Dynamic:
                 activityData += ", ";
-                activityData += $"\"QuestionType\":\"{dynamicQA.questionType.ToString()}\", ";
-                activityData += $"\"OptionType\":\"{dynamicQA.optionType.ToString()}\", ";
+                activityData += $"\"QuestionType\":\"{dynamicQA.questionType}\", ";
+                activityData += $"\"OptionType\":\"{dynamicQA.optionType}\", ";
                 activityData += $"\"QA\":"+dynamicQA.GetQAData();
                 break;
         }

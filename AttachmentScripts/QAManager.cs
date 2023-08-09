@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,6 +31,7 @@ public class QAManager : MonoBehaviour
     }
 
     public List<ActivityContent> GetCurrentActivityContents(){
+        UpdateActivityQuestion();
         return currentSlideActivityContents;
     }
 
@@ -108,6 +109,8 @@ public class QAManager : MonoBehaviour
         }
 
         for(int i=0; i<additionalComponents.Count; i++){
+            if(!additionalField.ContainsKey(additionalComponents[i].key)) continue;
+
             additionalField.Add(additionalComponents[i].key, additionalComponents[i].value);
         }
 
