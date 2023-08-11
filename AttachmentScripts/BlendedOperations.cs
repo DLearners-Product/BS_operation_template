@@ -262,4 +262,12 @@ public class BlendedOperations : MonoBehaviour
 
 #endregion
 
+#region PATCH_WORKS
+
+    // Function called from JS dont change the name it is used in blended session 
+    public void BUT_reset(){
+        ScoreManager.instance.ResetActivityData();
+    }
+
+#endregion
 }
