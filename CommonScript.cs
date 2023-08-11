@@ -27,12 +27,22 @@ public class Slide{
     public string slideName;
     public string teacherInstruction;
     public string activityInstruction;
+    public ActivityType activityType;
     public bool HAS_VIDEO,
                 HAS_WORKSHEET,
                 HAS_SYLLABLE,
                 HAS_GRAMMER,
                 HAS_ACTIVITY,
                 IS_MANUAL_ACTIVITY;
+
+    public bool IsManualActivity(){
+        if(IS_MANUAL_ACTIVITY) return true;
+        return activityType == ActivityType.ManualActivity;
+    }
+
+    public bool IsExceptionalActivity(){
+        return activityType == ActivityType.ExceptionalActivity;
+    }
 }
 
 [Serializable]
@@ -107,6 +117,12 @@ public enum QuestionType{
     None,
     Static,
     Dynamic
+}
+
+public enum ActivityType{
+    None,
+    ManualActivity,
+    ExceptionalActivity
 }
 
 #region GROUP_IMAGE
