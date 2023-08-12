@@ -79,6 +79,23 @@ public class ScoreManager : MonoBehaviour
         return activityData;
     }
 
+    public string GetActivityDataForDebug(int levelno = -1){
+        if(levelno == -1)
+            levelno = Main_Blended.OBJ_main_blended.levelno;
+        activityData = "[";
+        if(lessonGameActivityDatas[levelno].slideActivities != null){
+            for(int i=0; i < lessonGameActivityDatas[levelno].slideActivities.Count; i++){
+                activityData += lessonGameActivityDatas[levelno].slideActivities[i].getParsedJsonData();
+
+                if((i+1) < lessonGameActivityDatas[levelno].slideActivities.Count){
+                    activityData += ",";
+                }
+            }
+        }
+        activityData += "]";
+        return activityData;
+    }
+
     public void ResetActivityData(int levelno = -1){
         if(levelno == -1)
             levelno = Main_Blended.OBJ_main_blended.levelno;
@@ -102,7 +119,7 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    public void RightAnswer(int questionIndex, int scorevalue = 1, int questionID = -1, int answerID = -1){
+    public void RightAnswer(int questionIndex, int scorevalue = 1, int questionID = -1, int answerID = -1, string answer = ""){
         THI_InitialiseGameActivity(questionIndex);
 
         lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].tries++;
@@ -111,6 +128,8 @@ public class ScoreManager : MonoBehaviour
             lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].questionID = questionID;
         if(answerID != -1)
             lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answerID = answerID;
+        else if(answer != "")
+            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answer = answer;
     }
 
     public void WrongAnswer(int questionIndex, int scorevalue = 1, int questionID = -1, int answerID = -1){
