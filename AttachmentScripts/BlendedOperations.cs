@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.IO;
 using System.Text.RegularExpressions;
+using UnityEngine.Networking;
 
 public class BlendedOperations : MonoBehaviour
 {
@@ -37,14 +38,11 @@ public class BlendedOperations : MonoBehaviour
     }
 
     void AssignStaticQuestionsIds(JSONNode quesJSONData, JSONNode optionJSONData, StaticQA staticQA){
-        for(int i=0; i<staticQA.questions.Length; i++){
-            for(int j=0; j<quesJSONData.Count; j++){
-                if(staticQA.questions[i].question.text == quesJSONData[j]["question_text"]){
-                    staticQA.questions[i].question.id = quesJSONData[j]["question_id"];
-                    staticQA.questions[i].question.image_url = quesJSONData[j]["question_image"];
-                    staticQA.questions[i].question.audio_url = quesJSONData[j]["question_audio"];
-                }
-            }
+        for(int j=0; j<quesJSONData.Count; j++){
+            int qIndex = Int32.Parse(quesJSONData[j]["question_flow_no"]) - 1;
+            staticQA.questions[qIndex].question.id = quesJSONData[j]["question_id"];
+            staticQA.questions[qIndex].question.image_url = quesJSONData[j]["question_image"];
+            staticQA.questions[qIndex].question.audio_url = quesJSONData[j]["question_audio"];
         }
 
         for(int i=0; i<staticQA.options.Length; i++){
@@ -71,17 +69,12 @@ public class BlendedOperations : MonoBehaviour
     }
 
     void AssignDynamicQuestionIds(JSONNode jsonData, DynamicQA dynamicQA){
-        for(int i=0; i<dynamicQA.questions.Length; i++){
-            for(int j=0; j<jsonData.Count; j++){
-                if(dynamicQA.questions[i].question.text == jsonData[j]["question_text"]){
-                    // Debug.Log("-------> "+dynamicQA.questions[i].question.text);
-                    dynamicQA.questions[i].question.id = jsonData[j]["question_id"];
-                    dynamicQA.questions[i].question.image_url = jsonData[j]["question_image"];
-                    dynamicQA.questions[i].question.audio_url = jsonData[j]["question_audio"];
-                    // Debug.Log("Ques ID --> "+dynamicQA.questions[i].question.id+",  "+jsonData[j]["question_id"]);
-                    AssignDynamicOptionIds(jsonData[j]["options"], dynamicQA.questions[i].options);
-                }
-            }
+        for(int i=0; i<jsonData.Count; i++){
+            int qIndex = Int32.Parse(jsonData[i]["question_flow_no"]) - 1;
+            dynamicQA.questions[qIndex].question.id = jsonData[i]["question_id"];
+            dynamicQA.questions[qIndex].question.image_url = jsonData[i]["question_image"];
+            dynamicQA.questions[qIndex].question.audio_url = jsonData[i]["question_audio"];
+            AssignDynamicOptionIds(jsonData[i]["options"], dynamicQA.questions[qIndex].options);
         }
     }
 
@@ -200,6 +193,10 @@ public class BlendedOperations : MonoBehaviour
         }
     }
 
+    public void JS_CALL_ScoreDataDisplayAll()
+    {
+        Debug.Log($"{ScoreManager.instance.GetActivityDataForDebug()}");
+    }
     public void JS_CALL_CheckFunc(){
         Debug.Log($"In BlendedOperations CheckFunc");
     }
@@ -266,4 +263,29 @@ public class BlendedOperations : MonoBehaviour
 
 #endregion
 
+#region PATCH_WORKS
+
+    // Function called from JS dont change the name it is used in blended session 
+    public void BUT_reset(){
+        ScoreManager.instance.ResetActivityData();
+    }
+
+    public void SetQAActivityDataID(string lesson_id){
+        StartCoroutine(GET_Blended_ID(lesson_id));
+    }
+
+    IEnumerator GET_Blended_ID(string lesson_id){
+        string URL ="https://dlearners.in/template_and_games/Blended_session_apis/get_blended_question_options.php";
+
+        WWWForm form = new WWWForm();
+        form.AddField("lesson_id", lesson_id);
+        UnityWebRequest www = UnityWebRequest.Post(URL, form);
+        yield return www.SendWebRequest();
+
+        if (!www.isNetworkError){
+            JS_CALL_SetQAActivity(www.downloadHandler.text);
+        }
+    }
+
+#endregion
 }
