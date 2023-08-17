@@ -132,7 +132,7 @@ public class ScoreManager : MonoBehaviour
             lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answer = answer;
     }
 
-    public void WrongAnswer(int questionIndex, int scorevalue = 1, int questionID = -1, int answerID = -1){
+    public void WrongAnswer(int questionIndex, int scorevalue = 1, int questionID = -1, int answerID = -1, string answer = ""){
         THI_InitialiseGameActivity(questionIndex);
 
         lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].tries++;
@@ -141,5 +141,7 @@ public class ScoreManager : MonoBehaviour
             lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].questionID = questionID;
         if(answerID != -1)
             lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answerID = answerID;
+        else if(answer != "")
+            lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities[questionIndex].answer = answer;
     }
 }
