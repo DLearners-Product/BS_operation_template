@@ -60,21 +60,28 @@ public class ActivityContentManagerEditor : Editor
 
             if(activityContent == null) continue;
 
-            SerializedProperty questionType = activityContent.FindPropertyRelative("questionType");
-
             SerializedProperty slideNo = activityContent.FindPropertyRelative("slideNo");
+
+            SerializedProperty questionType = activityContent.FindPropertyRelative("questionType");
 
             SerializedProperty activityName = activityContent.FindPropertyRelative("activityName");
 
+            SerializedProperty hasSubquestion = activityContent.FindPropertyRelative("hasSubquestion");
+
             EditorGUILayout.PropertyField(slideNo);
             EditorGUILayout.PropertyField(activityName);
+            EditorGUILayout.PropertyField(hasSubquestion);
             EditorGUILayout.PropertyField(questionType, new GUIContent("QA Type"));
 
             // Debug.Log("--- > " + questionType.enumNames[questionType.enumValueIndex]);
             switch(questionType.enumValueIndex){
 
                 case 1:
-                    SerializedProperty staticQA = activityContent.FindPropertyRelative("staticQA");
+                    SerializedProperty staticQA;
+                    if(!hasSubquestion.boolValue)
+                        staticQA = activityContent.FindPropertyRelative("staticQA");
+                    else
+                        staticQA = activityContent.FindPropertyRelative("staticQAWithSQ");
 
                     MethodInfo staticMethodInfo = staticQA.serializedObject.targetObject.GetType().GetMethod("UpdateAsset");
 
