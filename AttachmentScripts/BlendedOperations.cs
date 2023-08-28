@@ -160,12 +160,9 @@ public class BlendedOperations : MonoBehaviour
         // }
         string qaData = "";
         if(activityContents.Count > 0){
-            // Debug.Log("if part");
             qaData = activityContents[0].GetData();
-            // Debug.Log(qaData);
             bridge.PassQAData(qaData);
         }else{
-            // Debug.Log("else part");
             bridge.PassQAData(qaData);
         }
         // return activityContents[0].GetData();
