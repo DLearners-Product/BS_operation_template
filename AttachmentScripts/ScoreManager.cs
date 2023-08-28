@@ -66,10 +66,10 @@ public class ScoreManager : MonoBehaviour
 
         if(lessonGameActivityDatas[levelno].slideActivities != null){
             for(int i=0; i < lessonGameActivityDatas[levelno].slideActivities.Count; i++){
-                if(lessonGameActivityDatas[levelno].slideActivities[i].isEmpty()) continue;
+                if(lessonGameActivityDatas[levelno].slideActivities[i].IsEmpty()) continue;
 
-                activityData += lessonGameActivityDatas[levelno].slideActivities[i].getParsedJsonData();
-                if((i+1) < lessonGameActivityDatas[levelno].slideActivities.Count && !lessonGameActivityDatas[levelno].slideActivities[i+1].isEmpty()){
+                activityData += lessonGameActivityDatas[levelno].slideActivities[i].GetParsedJsonData();
+                if((i+1) < lessonGameActivityDatas[levelno].slideActivities.Count && !lessonGameActivityDatas[levelno].slideActivities[i+1].IsEmpty()){
                     activityData += ",";
                 }
             }
@@ -85,7 +85,7 @@ public class ScoreManager : MonoBehaviour
         activityData = "[";
         if(lessonGameActivityDatas[levelno].slideActivities != null){
             for(int i=0; i < lessonGameActivityDatas[levelno].slideActivities.Count; i++){
-                activityData += lessonGameActivityDatas[levelno].slideActivities[i].getParsedJsonData();
+                activityData += lessonGameActivityDatas[levelno].slideActivities[i].GetParsedJsonData();
 
                 if((i+1) < lessonGameActivityDatas[levelno].slideActivities.Count){
                     activityData += ",";
