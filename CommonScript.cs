@@ -91,12 +91,12 @@ public class SlideActivityData{
         this.question = question;
     }
 
-    public string getParsedJsonData(){
+    public string GetParsedJsonData(){
         return JsonUtility.ToJson(this);
     }
 
     // return true if object is empty
-    public bool isEmpty(){
+    public bool IsEmpty(){
         return this.score <= 0 && this.failures <= 0 && this.tries <= 0;
     }
 }

@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.IO;
 using System.Text.RegularExpressions;
+using UnityEngine.Networking;
 
 public class BlendedOperations : MonoBehaviour
 {
@@ -159,12 +160,9 @@ public class BlendedOperations : MonoBehaviour
         // }
         string qaData = "";
         if(activityContents.Count > 0){
-            // Debug.Log("if part");
             qaData = activityContents[0].GetData();
-            // Debug.Log(qaData);
             bridge.PassQAData(qaData);
         }else{
-            // Debug.Log("else part");
             bridge.PassQAData(qaData);
         }
         // return activityContents[0].GetData();
@@ -262,4 +260,29 @@ public class BlendedOperations : MonoBehaviour
 
 #endregion
 
+#region PATCH_WORKS
+
+    // Function called from JS dont change the name it is used in blended session 
+    public void BUT_reset(){
+        ScoreManager.instance.ResetActivityData();
+    }
+
+    public void SetQAActivityDataID(string lesson_id){
+        StartCoroutine(GET_Blended_ID(lesson_id));
+    }
+
+    IEnumerator GET_Blended_ID(string lesson_id){
+        string URL ="https://dlearners.in/template_and_games/Blended_session_apis/get_blended_question_options.php";
+
+        WWWForm form = new WWWForm();
+        form.AddField("lesson_id", lesson_id);
+        UnityWebRequest www = UnityWebRequest.Post(URL, form);
+        yield return www.SendWebRequest();
+
+        if (!www.isNetworkError){
+            JS_CALL_SetQAActivity(www.downloadHandler.text);
+        }
+    }
+
+#endregion
 }
