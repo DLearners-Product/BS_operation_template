@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Video;
 
 #region DIFFFRENT_TYPE_OF_ACTIVITY_QA
-    [Serializable]
+[Serializable]
     public abstract class ActivityQA
     {
         protected int questionCount;
@@ -54,17 +56,17 @@ using UnityEngine;
             }
         }
 
-        string GetArrayData(QAO[] qas){
-            string data = "";
-            for (int i=0; i < qas.Length; i++)
-            {
-                data += qas[i].GetData();
-                if(i < (qas.Length -1)){
-                    data += ",";
-                }
-            }
-            return data;
-        }
+        // string GetArrayData(QAO[] qas){
+        //     string data = "";
+        //     for (int i=0; i < qas.Length; i++)
+        //     {
+        //         data += qas[i].GetData();
+        //         if(i < (qas.Length -1)){
+        //             data += ",";
+        //         }
+        //     }
+        //     return data;
+        // }
 
         public string GetQAData(){
             qaData = "[";
@@ -85,7 +87,7 @@ using UnityEngine;
         public Component[] options;
         public List<AdditionalComponent> additionalFields;
         string qaData;
-        
+
         public StaticQA() : base(){}
 
         public StaticQA(int count) : base(count){
@@ -156,91 +158,128 @@ using UnityEngine;
             return qaData;
         }
     }
+
+    [Serializable]
+    public class StaticQAWithSubQues{
+        public List<StaticQASubQues> qaWithSubQuestion = new List<StaticQASubQues>();
+
+        public string GetData(){
+            string activityContent = "[";
+
+            for (int i = 0; i < qaWithSubQuestion.Count; i++)
+            {
+                activityContent += qaWithSubQuestion[i].GetData();
+                if(i < (qaWithSubQuestion.Count - 1)){
+                    activityContent += ",";
+                }
+            }
+
+            activityContent += "]";
+
+            return activityContent;
+        }
+    }
 #endregion
 
+#region DIFFERENT_TYPE_QA
 [Serializable]
-public class QA{
-    public Component question;
-    public Component[] answers;
-    string strData;
-    
-    public void Update(){
-        question.UpdateAssets();
-        foreach(var answer in answers){
-            answer.UpdateAssets();
-        }
-    }
-
-    string GetArrayData(Component[] components){
-        string data = "[";
-        for (int i=0; i < components.Length; i++)
-        {
-            data += components[i].GetComponentStringfyData();
-            if(i < (components.Length -1)){
-                data += ",";
+    public class QA{
+        public Component question;
+        public Component[] answers;
+        string strData;
+        
+        public void Update(){
+            question.UpdateAssets();
+            foreach(var answer in answers){
+                answer.UpdateAssets();
             }
         }
-        data += "]";
-        return data;
-    }
 
-    public string GetData(){
-        strData = "{";
-        strData += $"\"question\":{question.GetComponentStringfyData()}, \"answer\":";
-        strData += GetArrayData(answers) + "}";
-        return strData;
-    }
-}
+        string GetArrayData(Component[] components){
+            string data = "[";
+            for (int i=0; i < components.Length; i++)
+            {
+                data += components[i].GetComponentStringfyData();
+                if(i < (components.Length -1)){
+                    data += ",";
+                }
+            }
+            data += "]";
+            return data;
+        }
 
-[Serializable]
-public class QAO{
-    public Component question;
-    // public Component[] answers;
-    public OptionComponent[] options;
-    string strData;
-
-    public void Update(){
-        question.UpdateAssets();
-        // foreach(var answer in answers){
-        //     answer.UpdateAssets();
-        // }
-
-        foreach(var option in options){
-            option.UpdateAssets();
+        public string GetData(){
+            strData = "{";
+            strData += $"\"question\":{question.GetComponentStringfyData()}, \"answer\":";
+            strData += GetArrayData(answers) + "}";
+            return strData;
         }
     }
 
-    public OptionComponent[] GetAnswers(){
-        List<OptionComponent> answers = new List<OptionComponent>();
-        foreach (var option in options)
-        {
-            if(option.isAnswer)
-                answers.Add(option);
-        }
-        return answers.ToArray();
-    }
+    [Serializable]
+    public class QAO{
+        public Component question;
+        public OptionComponent[] options;
+        string strData;
 
-    string GetArrayData(Component[] components){
-        string data = "[";
-        for (int i=0; i < components.Length; i++)
-        {
-            data += components[i].GetComponentStringfyData();
-            if(i < (components.Length -1)){
-                data += ",";
+        public void Update(){
+            question.UpdateAssets();
+
+            foreach(var option in options){
+                option.UpdateAssets();
             }
         }
-        data += "]";
-        return data;
+
+        public OptionComponent[] GetAnswers(){
+            List<OptionComponent> answers = new List<OptionComponent>();
+            foreach (var option in options)
+            {
+                if(option.isAnswer)
+                    answers.Add(option);
+            }
+            return answers.ToArray();
+        }
+
+        string GetArrayData(Component[] components){
+            string data = "[";
+            for (int i=0; i < components.Length; i++)
+            {
+                data += components[i].GetComponentStringfyData();
+                if(i < (components.Length -1)){
+                    data += ",";
+                }
+            }
+            data += "]";
+            return data;
+        }
+
+        public string GetData(){
+            strData = "{";
+            strData += $"\"question\":{question.GetComponentStringfyData()}, \"answer\":";
+            strData += GetArrayData(GetAnswers()) + ", \"option\":";
+            strData += GetArrayData(options) + "}";
+            return strData;
+        }
     }
 
-    public string GetData(){
-        strData = "{";
-        strData += $"\"question\":{question.GetComponentStringfyData()}, \"answer\":";
-        strData += GetArrayData(GetAnswers()) + ", \"option\":";
-        strData += GetArrayData(options) + "}";
-        return strData;
+    [Serializable]
+    public class StaticQASubQues{
+        public FileType questionType;
+        public Component mainQues;
+        public StaticQA staticSubQA;
+        string strData;
+
+        public string GetData(){
+            strData = "{";
+            strData += $"\"questionType\": \"{questionType}\", ";
+            strData += $"\"mainQuestion\": {mainQues.GetComponentStringfyData()}, ";
+            strData += $"\"subQuestion\": {staticSubQA.GetQAData()}, ";
+            strData += $"\"Option\": {staticSubQA.GetOptionData()}"; 
+            strData += "}";
+            return strData;
+        }
     }
-}
+#endregion
 
 [Serializable]
 public class AdditionalComponent{
@@ -253,7 +292,7 @@ public class AdditionalComponent{
         activityContent = "{";
         activityContent += $"\"{key}\"";
         activityContent += " : {";
-        activityContent += $"\"DataType\" : \"{dataType.ToString()}\",";
+        activityContent += $"\"DataType\" : \"{dataType}\",";
         activityContent += $"\"Value\" : {value.GetComponentStringfyData()}";
         activityContent += "}}";
         return activityContent;
@@ -264,9 +303,11 @@ public class AdditionalComponent{
 public class ActivityContent{
     public int slideNo;
     public string activityName;
+    public bool hasSubquestion;
     public QuestionType questionType;
     public StaticQA staticQA = new StaticQA();
     public DynamicQA dynamicQA = new DynamicQA();
+    public StaticQAWithSubQues staticQAWithSQ = new StaticQAWithSubQues();
     string activityData;
 
     public void UpdateAsset(){
@@ -285,21 +326,29 @@ public class ActivityContent{
     public string GetData(){
         activityData = "{";
         activityData += $"\"ActivityName\":\"{activityName}\", ";
-        activityData += $"\"SlideIndex\":\"{slideNo.ToString()}\", ";
-        activityData += $"\"IsManualActivity\":\"{MainBlendedData.instance.slideDatas[slideNo].IS_MANUAL_ACTIVITY.ToString()}\", ";
-        activityData += $"\"QAType\":\"{questionType.ToString()}\"";
+        activityData += $"\"SlideIndex\":\"{slideNo}\", ";
+        activityData += $"\"IsManualActivity\":\"{MainBlendedData.instance.slideDatas[slideNo].IsManualActivity()}\", ";
+        activityData += $"\"IsExceptionalActivity\":\"{MainBlendedData.instance.slideDatas[slideNo].IsExceptionalActivity()}\", ";
+        activityData += $"\"HasSubQuestion\":\"{hasSubquestion}\", ";
+        activityData += $"\"QAType\":\"{questionType}\"";
         switch(questionType){
             case QuestionType.Static:
                 activityData += ", ";
-                activityData += $"\"QuestionType\":\"{staticQA.questionType.ToString()}\", ";
-                activityData += $"\"OptionType\":\"{staticQA.optionType.ToString()}\", ";
-                activityData += $"\"QA\":"+staticQA.GetQAData()+", ";
-                activityData += $"\"Option\":"+staticQA.GetOptionData();
+                activityData += $"\"QuestionType\":\"{staticQA.questionType}\", ";
+                activityData += $"\"OptionType\":\"{staticQA.optionType}\", ";
+                if(!hasSubquestion){
+                    Debug.Log($"{activityName} --> Not HAS Sub question");
+                    activityData += $"\"QA\":"+staticQA.GetQAData()+", "; 
+                    activityData += $"\"Option\":"+staticQA.GetOptionData();
+                }else{
+                    Debug.Log($"{activityName} --> HAS Sub question");
+                    activityData += $"\"QA\":{staticQAWithSQ.GetData()}";
+                }
                 break;
             case QuestionType.Dynamic:
                 activityData += ", ";
-                activityData += $"\"QuestionType\":\"{dynamicQA.questionType.ToString()}\", ";
-                activityData += $"\"OptionType\":\"{dynamicQA.optionType.ToString()}\", ";
+                activityData += $"\"QuestionType\":\"{dynamicQA.questionType}\", ";
+                activityData += $"\"OptionType\":\"{dynamicQA.optionType}\", ";
                 activityData += $"\"QA\":"+dynamicQA.GetQAData();
                 break;
         }
