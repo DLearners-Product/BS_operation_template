@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -79,6 +80,11 @@ public class QAManager : MonoBehaviour
 
     public Component GetQuestionAt(int activityNo, int questionNo){
         ActivityContent currentSlideActivityContent = currentSlideActivityContents[activityNo];
+
+        if(currentSlideActivityContent.hasSubquestion){
+            throw new InvalidOperationException("For Activity with Sub questions use GetSubQuestionsAt() function to get question");
+        }
+
         switch(currentSlideActivityContent.questionType){
             case QuestionType.Static:
                 return currentSlideActivityContent.staticQA.questions[questionNo].question;
@@ -91,6 +97,11 @@ public class QAManager : MonoBehaviour
 
     public Component[] GetAllQuestions(int activityNo){
         ActivityContent currentSlideActivityContent = currentSlideActivityContents[activityNo];
+
+        if(currentSlideActivityContent.hasSubquestion){
+            throw new InvalidOperationException("For Activity with Sub questions use GetSubQuestionsAt() function to get question");
+        }
+
         Component[] questions;
         switch(currentSlideActivityContent.questionType){
             case QuestionType.Static:
@@ -112,6 +123,11 @@ public class QAManager : MonoBehaviour
 
     public Component[] GetOption(int activityNo, int questionNo=0){
         ActivityContent currentSlideActivityContent = currentSlideActivityContents[activityNo];
+
+        if(currentSlideActivityContent.hasSubquestion){
+            throw new InvalidOperationException("For Activity with Sub questions use GetSubQuestionsOptionsAt() function to get options");
+        }
+
         switch(currentSlideActivityContent.questionType){
             case QuestionType.Static:
                 return currentSlideActivityContent.staticQA.options;
