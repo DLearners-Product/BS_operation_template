@@ -132,6 +132,15 @@ using UnityEngine.Video;
             return qaData;
         }
 
+        public Component[] GetQuestions(){
+            int questionCount = questions.Length;
+            Component[] _questions = new Component[questionCount];
+            for(int i=0; i<questionCount; i++){
+                _questions[i] = questions[i].question;
+            }
+            return _questions;
+        }
+
         public string GetOptionData(){
             qaData = "[";
             for(int i=0; i<options.Length; i++){
