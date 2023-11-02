@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
@@ -201,7 +201,11 @@ public class BlendedOperations : MonoBehaviour
                     if(activityContent.questionType == QuestionType.Dynamic){
                         AssignDynamicQuestionIds(jsonData[i]["questions"], activityContent.dynamicQA);
                     }else if(activityContent.questionType == QuestionType.Static){
-                        AssignStaticQuestionsIds(jsonData[i]["questions"], jsonData[i]["options"], activityContent.staticQA);
+                        if(activityContent.hasSubquestion){
+                            AssignStaticQAWithSubQues(jsonData[i]["qao"], activityContent.staticQAWithSQ);
+                        }
+                        else    
+                            AssignStaticQuestionsIds(jsonData[i]["questions"], jsonData[i]["options"], activityContent.staticQA);
                     }
                     break;
                 }
