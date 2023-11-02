@@ -41,6 +41,42 @@ public class QAManager : MonoBehaviour
         return currentSlideActivityContents[activityNo];
     }
 
+    public Component[] GetSubQuestionsAt(int activityNo, int questionNo){
+        ActivityContent currentSlideActivityContent = currentSlideActivityContents[activityNo];
+
+        if(!currentSlideActivityContent.hasSubquestion){
+            throw new InvalidOperationException("GetSubQuestionsAt() function valid only for Activity with SubQuestion");
+        }
+
+        switch(currentSlideActivityContent.questionType){
+            case QuestionType.Static:
+                return currentSlideActivityContent.staticQAWithSQ.qaWithSubQuestion[questionNo].staticSubQA.GetQuestions();
+            case QuestionType.Dynamic:
+                // Dynamic Question Type Implementation come here
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    public Component[] GetSubQuestionOptionsAt(int activityNo, int questionNo){
+        ActivityContent currentSlideActivityContent = currentSlideActivityContents[activityNo];
+
+        if(!currentSlideActivityContent.hasSubquestion){
+            throw new InvalidOperationException("GetSubQuestionOptionsAt() function valid only for Activity with SubQuestion");
+        }
+
+        switch(currentSlideActivityContent.questionType){
+            case QuestionType.Static:
+                return currentSlideActivityContent.staticQAWithSQ.qaWithSubQuestion[questionNo].staticSubQA.options;
+            case QuestionType.Dynamic:
+                // Dynamic options Type Implementation come here
+                return null;
+            default:
+                return null;
+        }
+    }
+
     public Component GetQuestionAt(int activityNo, int questionNo){
         ActivityContent currentSlideActivityContent = currentSlideActivityContents[activityNo];
         switch(currentSlideActivityContent.questionType){
