@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
@@ -75,6 +75,25 @@ public class BlendedOperations : MonoBehaviour
             dynamicQA.questions[qIndex].question.image_url = jsonData[i]["question_image"];
             dynamicQA.questions[qIndex].question.audio_url = jsonData[i]["question_audio"];
             AssignDynamicOptionIds(jsonData[i]["options"], dynamicQA.questions[qIndex].options);
+        }
+    }
+
+    void AssignStaticQAWithSubQues(JSONNode jsonData, StaticQAWithSubQues staticQAWithSubQues){
+        Debug.Log(jsonData);
+        for(int i=0; i<staticQAWithSubQues.qaWithSubQuestion.Count; i++){
+            StaticQASubQues staticQA = staticQAWithSubQues.qaWithSubQuestion[i];
+
+            if(staticQA.mainQues.text == jsonData[i]["main_ques"]["text"]){
+                staticQA.mainQues.id = jsonData[i]["main_ques"]["id"];
+            }
+
+            for(int j=0; j<staticQA.staticSubQA.questions.Length; j++){
+                staticQA.staticSubQA.questions[j].question.id = jsonData[i]["questions"][j]["question_id"];
+            }
+
+            for(int z=0; z<staticQA.staticSubQA.options.Length; z++){
+                staticQA.staticSubQA.options[z].id = jsonData[i]["options"][z]["option_id"];
+            }
         }
     }
 
