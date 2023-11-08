@@ -51,8 +51,8 @@ public class ScoreManager : MonoBehaviour
     // }
 
     public void THI_InitialiseGameActivity(int QIndex){
-        Debug.Log("QIndex : "+QIndex);
-        Debug.Log(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno]);
+        // Debug.Log("QIndex : "+QIndex);
+        // Debug.Log(lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno]);
         if ((lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities.Count - 1) < QIndex){
             lessonGameActivityDatas[Main_Blended.OBJ_main_blended.levelno].slideActivities.Add(new SlideActivityData(QIndex));
         }
