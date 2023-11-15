@@ -144,11 +144,11 @@ public class BlendedOperations : MonoBehaviour
     }
 
     public void JS_CALL_GetActivityContentData(){
-        // string filePath = "ActivityContent.txt";
+        //  string filePath = "ActivityContent.txt";
         string activityOerallData = ActivityContentManager.instance.GetOverallData();
-        // using(StreamWriter writer = new StreamWriter(filePath)){
-        //     writer.WriteLine(activityOerallData);
-        // }
+        //  using(StreamWriter writer = new StreamWriter(filePath)){
+        //      writer.WriteLine(activityOerallData);
+        //  }
         bridge.PassActivityOverallContent(activityOerallData);
     }
 
