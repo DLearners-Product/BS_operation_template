@@ -38,4 +38,9 @@ mergeInto(LibraryManager.library, {
         GetActivityContentData(UTF8ToString(contentData));
     }
 
+    NotifyVideoCompleted : function(){
+        console.log("Video Completed");
+        VideoBtnToogle();
+    }
+
 });

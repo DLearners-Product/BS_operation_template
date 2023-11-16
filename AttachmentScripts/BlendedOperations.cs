@@ -9,6 +9,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UnityEngine.Networking;
 
+[RequireComponent(typeof(Bridge))]
 public class BlendedOperations : MonoBehaviour
 {
     public Bridge bridge;
@@ -19,6 +20,8 @@ public class BlendedOperations : MonoBehaviour
         if(instance == null){
             instance = this;
         }
+
+        if(bridge == null) bridge = GetComponent<Bridge>();
     }
 
     Transform FindGameObject(GameObject rootObject, string gameObjectName){
@@ -35,6 +38,10 @@ public class BlendedOperations : MonoBehaviour
     public void NotifyActivityCompleted(){
         string activityScore = ScoreManager.instance.GetActivityData();
         bridge.NotifyActivityIsCompleted(activityScore);
+    }
+
+    public void VideoCompleted(){
+        bridge.VideoCompleted();
     }
 
     void AssignStaticQuestionsIds(JSONNode quesJSONData, JSONNode optionJSONData, StaticQA staticQA){
