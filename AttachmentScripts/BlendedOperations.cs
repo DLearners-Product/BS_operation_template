@@ -24,6 +24,10 @@ public class BlendedOperations : MonoBehaviour
         if(bridge == null) bridge = GetComponent<Bridge>();
     }
 
+    private void Start() {
+        Main_Blended.OBJ_main_blended.GA_levelsIG = new GameObject[MainBlendedData.instance.slideDatas.Count];
+    }
+
     Transform FindGameObject(GameObject rootObject, string gameObjectName){
         if(gameObjectName == rootObject.name){
             return rootObject.transform;
