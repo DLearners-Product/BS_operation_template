@@ -26,6 +26,7 @@ public class BlendedOperations : MonoBehaviour
 
     private void Start() {
         Main_Blended.OBJ_main_blended.GA_levelsIG = new GameObject[MainBlendedData.instance.slideDatas.Count];
+        Main_Blended.OBJ_main_blended.G_write.transform.parent.gameObject.SetActive(true);
     }
 
     Transform FindGameObject(GameObject rootObject, string gameObjectName){
