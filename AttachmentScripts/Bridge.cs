@@ -36,6 +36,9 @@ public class Bridge : MonoBehaviour
 
     [DllImport("__Internal")]
     private static extern void SendOverallActivityContentData(string activityContent);
+
+    [DllImport("__Internal")]
+    private static extern void NotifyVideoCompleted();
 #endif
 
     string[] slide_name;
@@ -152,6 +155,12 @@ public class Bridge : MonoBehaviour
     public void PassActivityOverallContent(string activityOverallContent){
 #if UNITY_WEBGL && !UNITY_EDITOR
         SendOverallActivityContentData(activityOverallContent);
+#endif
+    }
+
+    public void VideoCompleted(){
+#if UNITY_WEBGL && !UNITY_EDITOR
+        NotifyVideoCompleted();
 #endif
     }
 }
