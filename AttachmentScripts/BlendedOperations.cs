@@ -9,6 +9,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UnityEngine.Networking;
 
+[RequireComponent(typeof(Bridge))]
 public class BlendedOperations : MonoBehaviour
 {
     public Bridge bridge;
@@ -19,6 +20,13 @@ public class BlendedOperations : MonoBehaviour
         if(instance == null){
             instance = this;
         }
+
+        if(bridge == null) bridge = GetComponent<Bridge>();
+    }
+
+    private void Start() {
+        Main_Blended.OBJ_main_blended.GA_levelsIG = new GameObject[MainBlendedData.instance.slideDatas.Count];
+        Main_Blended.OBJ_main_blended.G_write.transform.parent.gameObject.SetActive(true);
     }
 
     Transform FindGameObject(GameObject rootObject, string gameObjectName){
@@ -35,6 +43,10 @@ public class BlendedOperations : MonoBehaviour
     public void NotifyActivityCompleted(){
         string activityScore = ScoreManager.instance.GetActivityData();
         bridge.NotifyActivityIsCompleted(activityScore);
+    }
+
+    public void VideoCompleted(){
+        bridge.VideoCompleted();
     }
 
     void AssignStaticQuestionsIds(JSONNode quesJSONData, JSONNode optionJSONData, StaticQA staticQA){
@@ -75,6 +87,25 @@ public class BlendedOperations : MonoBehaviour
             dynamicQA.questions[qIndex].question.image_url = jsonData[i]["question_image"];
             dynamicQA.questions[qIndex].question.audio_url = jsonData[i]["question_audio"];
             AssignDynamicOptionIds(jsonData[i]["options"], dynamicQA.questions[qIndex].options);
+        }
+    }
+
+    void AssignStaticQAWithSubQues(JSONNode jsonData, StaticQAWithSubQues staticQAWithSubQues){
+        Debug.Log(jsonData);
+        for(int i=0; i<staticQAWithSubQues.qaWithSubQuestion.Count; i++){
+            StaticQASubQues staticQA = staticQAWithSubQues.qaWithSubQuestion[i];
+
+            if(staticQA.mainQues.text == jsonData[i]["main_ques"]["text"]){
+                staticQA.mainQues.id = jsonData[i]["main_ques"]["id"];
+            }
+
+            for(int j=0; j<staticQA.staticSubQA.questions.Length; j++){
+                staticQA.staticSubQA.questions[j].question.id = jsonData[i]["questions"][j]["question_id"];
+            }
+
+            for(int z=0; z<staticQA.staticSubQA.options.Length; z++){
+                staticQA.staticSubQA.options[z].id = jsonData[i]["options"][z]["option_id"];
+            }
         }
     }
 
@@ -182,7 +213,11 @@ public class BlendedOperations : MonoBehaviour
                     if(activityContent.questionType == QuestionType.Dynamic){
                         AssignDynamicQuestionIds(jsonData[i]["questions"], activityContent.dynamicQA);
                     }else if(activityContent.questionType == QuestionType.Static){
-                        AssignStaticQuestionsIds(jsonData[i]["questions"], jsonData[i]["options"], activityContent.staticQA);
+                        if(activityContent.hasSubquestion){
+                            AssignStaticQAWithSubQues(jsonData[i]["qao"], activityContent.staticQAWithSQ);
+                        }
+                        else    
+                            AssignStaticQuestionsIds(jsonData[i]["questions"], jsonData[i]["options"], activityContent.staticQA);
                     }
                     break;
                 }

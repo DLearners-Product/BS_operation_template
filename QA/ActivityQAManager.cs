@@ -120,6 +120,14 @@ using UnityEngine.Video;
             }
         }
 
+        public string GetQuestionType(){
+            return questionType.ToString();
+        }
+
+        public string GetOptionType(){
+            return optionType.ToString();
+        }
+
         public string GetQAData(){
             qaData = "[";
             for(int i=0; i<questions.Length; i++){
@@ -130,6 +138,15 @@ using UnityEngine.Video;
             }
             qaData += "]";
             return qaData;
+        }
+
+        public Component[] GetQuestions(){
+            int questionCount = questions.Length;
+            Component[] _questions = new Component[questionCount];
+            for(int i=0; i<questionCount; i++){
+                _questions[i] = questions[i].question;
+            }
+            return _questions;
         }
 
         public string GetOptionData(){
@@ -273,6 +290,8 @@ using UnityEngine.Video;
             strData = "{";
             strData += $"\"questionType\": \"{questionType}\", ";
             strData += $"\"mainQuestion\": {mainQues.GetComponentStringfyData()}, ";
+            strData += $"\"subQuestionType\": \"{staticSubQA.GetQuestionType()}\", ";
+            strData += $"\"subOptionType\": \"{staticSubQA.GetOptionType()}\", ";
             strData += $"\"subQuestion\": {staticSubQA.GetQAData()}, ";
             strData += $"\"Option\": {staticSubQA.GetOptionData()}"; 
             strData += "}";
