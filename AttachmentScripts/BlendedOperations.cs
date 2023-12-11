@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
@@ -25,8 +25,10 @@ public class BlendedOperations : MonoBehaviour
     }
 
     private void Start() {
+#region Blended_Bug_Fixes
         Main_Blended.OBJ_main_blended.GA_levelsIG = new GameObject[MainBlendedData.instance.slideDatas.Count];
         Main_Blended.OBJ_main_blended.G_write.transform.parent.gameObject.SetActive(true);
+#endregion
     }
 
     Transform FindGameObject(GameObject rootObject, string gameObjectName){
