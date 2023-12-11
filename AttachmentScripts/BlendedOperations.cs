@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using System.IO;
 using System.Text.RegularExpressions;
 using UnityEngine.Networking;
+using UnityEngine.Video;
 
 [RequireComponent(typeof(Bridge))]
 public class BlendedOperations : MonoBehaviour
@@ -224,6 +225,14 @@ public class BlendedOperations : MonoBehaviour
                     break;
                 }
             }
+        }
+    }
+
+    public void JS_CALL_VideoPlayAtPlayBackSpeed(float playbackSpeed){
+        VideoPlayer[] videoProgressBars = FindObjectsOfType(typeof(VideoPlayer)) as VideoPlayer[];
+        foreach (var vp in videoProgressBars)
+        {
+            vp.playbackSpeed = playbackSpeed;
         }
     }
 
