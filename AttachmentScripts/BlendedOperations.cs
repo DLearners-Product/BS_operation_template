@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
@@ -232,11 +232,12 @@ public class BlendedOperations : MonoBehaviour
         }
     }
 
-    public void JS_CALL_VideoPlayAtPlayBackSpeed(float playbackSpeed){
+    public void JS_CALL_VideoPlayAtPlayBackSpeed(string playbackSpeed){
+        float fPlayBackSpeed = float.Parse(playbackSpeed);
         VideoPlayer[] videoProgressBars = FindObjectsOfType(typeof(VideoPlayer)) as VideoPlayer[];
         foreach (var vp in videoProgressBars)
         {
-            vp.playbackSpeed = playbackSpeed;
+            vp.playbackSpeed = fPlayBackSpeed;
         }
     }
 
