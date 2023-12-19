@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
@@ -178,11 +178,15 @@ public class BlendedOperations : MonoBehaviour
     }
 
     public void JS_CALL_GetActivityContentData(){
-        // string filePath = "ActivityContent.txt";
         string activityOerallData = ActivityContentManager.instance.GetOverallData();
-        // using(StreamWriter writer = new StreamWriter(filePath)){
-        //     writer.WriteLine(activityOerallData);
-        // }
+#if UNITY_EDITOR
+        if(Application.isEditor){
+            string filePath = "ActivityContent.txt";
+            using(StreamWriter writer = new StreamWriter(filePath)){
+                writer.WriteLine(activityOerallData);
+            }
+        }
+#endif
         bridge.PassActivityOverallContent(activityOerallData);
     }
 
