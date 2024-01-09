@@ -178,11 +178,15 @@ public class BlendedOperations : MonoBehaviour
     }
 
     public void JS_CALL_GetActivityContentData(){
-        // string filePath = "ActivityContent.txt";
         string activityOerallData = ActivityContentManager.instance.GetOverallData();
-        // using(StreamWriter writer = new StreamWriter(filePath)){
-        //     writer.WriteLine(activityOerallData);
-        // }
+#if UNITY_EDITOR
+        if(Application.isEditor){
+            string filePath = "ActivityContent.txt";
+            using(StreamWriter writer = new StreamWriter(filePath)){
+                writer.WriteLine(activityOerallData);
+            }
+        }
+#endif
         bridge.PassActivityOverallContent(activityOerallData);
     }
 
@@ -228,11 +232,12 @@ public class BlendedOperations : MonoBehaviour
         }
     }
 
-    public void JS_CALL_VideoPlayAtPlayBackSpeed(float playbackSpeed){
+    public void JS_CALL_VideoPlayAtPlayBackSpeed(string playbackSpeed){
+        float fPlayBackSpeed = float.Parse(playbackSpeed);
         VideoPlayer[] videoProgressBars = FindObjectsOfType(typeof(VideoPlayer)) as VideoPlayer[];
         foreach (var vp in videoProgressBars)
         {
-            vp.playbackSpeed = playbackSpeed;
+            vp.playbackSpeed = fPlayBackSpeed;
         }
     }
 
