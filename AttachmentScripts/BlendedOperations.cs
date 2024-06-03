@@ -15,7 +15,9 @@ public class BlendedOperations : MonoBehaviour
 {
     public Bridge bridge;
     public static BlendedOperations instance;
-    
+    public delegate void DEL_childChanged();
+    public static DEL_childChanged childChanged;
+
     private void Awake()
     {
         if(instance == null){
@@ -52,6 +54,7 @@ public class BlendedOperations : MonoBehaviour
         bridge.VideoCompleted();
     }
 
+#region QUESTION_OPT_ID_ASSIGN_FUNCS
     void AssignStaticQuestionsIds(JSONNode quesJSONData, JSONNode optionJSONData, StaticQA staticQA){
         for(int j=0; j<quesJSONData.Count; j++){
             int qIndex = Int32.Parse(quesJSONData[j]["question_flow_no"]) - 1;
@@ -94,7 +97,6 @@ public class BlendedOperations : MonoBehaviour
     }
 
     void AssignStaticQAWithSubQues(JSONNode jsonData, StaticQAWithSubQues staticQAWithSubQues){
-        Debug.Log(jsonData);
         for(int i=0; i<staticQAWithSubQues.qaWithSubQuestion.Count; i++){
             StaticQASubQues staticQA = staticQAWithSubQues.qaWithSubQuestion[i];
 
@@ -111,6 +113,7 @@ public class BlendedOperations : MonoBehaviour
             }
         }
     }
+#endregion
 
 #region EXTERNAL_JS_INVOKE_FUNCTIONS
 
@@ -172,6 +175,7 @@ public class BlendedOperations : MonoBehaviour
     }
 
     public void JS_CALL_GetActivityScoreData(){
+        childChanged?.Invoke();
         string scoreData = ScoreManager.instance.GetActivityData();
         bridge.SendActivityScoreData(scoreData);
         ScoreManager.instance.ResetActivityData();

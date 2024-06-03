@@ -81,23 +81,66 @@ public class SlideActivityData{
     public int failures = 0;
     public int score = 0;
     public string answer;
+    public bool answerAnalysis;
+    List<SlideActivityData> logs;
 
     public SlideActivityData(int qNo){
+        this.answerAnalysis = false;
         this.questionID = qNo;
+        logs = new List<SlideActivityData>();
     }
 
     public SlideActivityData(int qNo, string question){
         this.questionID = qNo;
         this.question = question;
+        logs = new List<SlideActivityData>();
+    }
+
+    SlideActivityData(string questionSTR, int qID, int answerID, int tries, int failures, int score, string answer, bool analysis){
+        this.question = questionSTR;
+        this.questionID = qID;
+        this.answerID = answerID;
+        this.tries = tries;
+        this.failures = failures;
+        this.score = score;
+        this.answer = answer;
+        this.answerAnalysis = analysis;
     }
 
     public string GetParsedJsonData(){
-        return JsonUtility.ToJson(this);
+        string slideActivityData = "{";
+
+        slideActivityData += $"\"question\": \"{question}\", \"questionID\": {questionID}, \"answerID\": {answerID}, \"tries\": {tries}, \"failures\": {failures}, \"score\": {score}, \"answer\": \"{answer}\", \"isCorrect\": ";
+
+        slideActivityData += (answerAnalysis) ? "true" : "false";
+        slideActivityData += ", \"isValid\": true";
+
+        if(logs != null && logs.Count > 0){
+            slideActivityData += ", \"logs\": [";
+            for (int i = 0; i < logs.Count; i++)
+            {
+                slideActivityData += logs[i].GetParsedJsonData();
+                if((i+1) < logs.Count){
+                    slideActivityData += ", ";
+                }
+            }
+            slideActivityData += "]";
+        }
+
+        slideActivityData += "}";
+
+        return slideActivityData;
     }
 
-    // return true if object is empty
+    // return true if object is empty (ie., object is considered empty when score, failures and tries are valued 0 and below)
     public bool IsEmpty(){
         return this.score <= 0 && this.failures <= 0 && this.tries <= 0;
+    }
+
+    public void AppendLog(){
+        if(this.IsEmpty()) return;
+
+        logs.Add(new SlideActivityData(this.question, this.questionID, this.answerID, this.tries, this.failures, this.score, this.answer, this.answerAnalysis));
     }
 }
 
@@ -122,6 +165,7 @@ public enum QuestionType{
 public enum ActivityType{
     None,
     ManualActivity,
+    TimerActivity,
     ExceptionalActivity
 }
 
@@ -299,3 +343,4 @@ public class OptionComponent : Component{
 }
 
 #endregion
+

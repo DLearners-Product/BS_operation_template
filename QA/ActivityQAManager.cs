@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Video;
 
 #region DIFFFRENT_TYPE_OF_ACTIVITY_QA
-[Serializable]
+    [Serializable]
     public abstract class ActivityQA
     {
         protected int questionCount;
@@ -199,7 +199,7 @@ using UnityEngine.Video;
 #endregion
 
 #region DIFFERENT_TYPE_QA
-[Serializable]
+    [Serializable]
     public class QA{
         public Component question;
         public Component[] answers;
