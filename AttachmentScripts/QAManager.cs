@@ -16,7 +16,7 @@ public class QAManager : MonoBehaviour
             instance = this;
         additionalField = new Dictionary<string, Component>();
     }
-    
+
     public void UpdateActivityQuestion(){
         currentSlideActivityContents?.Clear();
         currentSlideNum = Main_Blended.OBJ_main_blended.levelno;
