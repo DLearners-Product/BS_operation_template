@@ -7,17 +7,31 @@ using TMPro;
 using UnityEngine.UI;
 using System.IO;
 using System.Text.RegularExpressions;
+using UnityEngine.Networking;
+using UnityEngine.Video;
 
+[RequireComponent(typeof(Bridge))]
 public class BlendedOperations : MonoBehaviour
 {
     public Bridge bridge;
     public static BlendedOperations instance;
-    
+    public delegate void DEL_childChanged();
+    public static DEL_childChanged childChanged;
+
     private void Awake()
     {
         if(instance == null){
             instance = this;
         }
+
+        if(bridge == null) bridge = GetComponent<Bridge>();
+    }
+
+    private void Start() {
+#region Blended_Bug_Fixes
+        Main_Blended.OBJ_main_blended.GA_levelsIG = new GameObject[MainBlendedData.instance.slideDatas.Count];
+        Main_Blended.OBJ_main_blended.G_write.transform.parent.gameObject.SetActive(true);
+#endregion
     }
 
     Transform FindGameObject(GameObject rootObject, string gameObjectName){
@@ -36,19 +50,25 @@ public class BlendedOperations : MonoBehaviour
         bridge.NotifyActivityIsCompleted(activityScore);
     }
 
+    public void VideoCompleted(){
+        bridge.VideoCompleted();
+    }
+
+#region QUESTION_OPT_ID_ASSIGN_FUNCS
     void AssignStaticQuestionsIds(JSONNode quesJSONData, JSONNode optionJSONData, StaticQA staticQA){
-        for(int i=0; i<staticQA.questions.Length; i++){
-            for(int j=0; j<quesJSONData.Count; j++){
-                if(staticQA.questions[i].question.text == quesJSONData[j]["question_text"]){
-                    staticQA.questions[i].question.id = quesJSONData[j]["question_id"];
-                }
-            }
+        for(int j=0; j<quesJSONData.Count; j++){
+            int qIndex = Int32.Parse(quesJSONData[j]["question_flow_no"]) - 1;
+            staticQA.questions[qIndex].question.id = quesJSONData[j]["question_id"];
+            staticQA.questions[qIndex].question.image_url = quesJSONData[j]["question_image"];
+            staticQA.questions[qIndex].question.audio_url = quesJSONData[j]["question_audio"];
         }
 
         for(int i=0; i<staticQA.options.Length; i++){
             for(int j=0; j<optionJSONData.Count; j++){
                 if(staticQA.options[i].text == optionJSONData[j]["option_text"]){
                     staticQA.options[i].id = optionJSONData[j]["option_id"];
+                    staticQA.options[i].image_url = optionJSONData[j]["question_image"];
+                    staticQA.options[i].audio_url = optionJSONData[j]["question_audio"];
                 }
             }
         }
@@ -59,23 +79,41 @@ public class BlendedOperations : MonoBehaviour
             for(int j=0; j<jsonData.Count; j++){
                 if(options[i].text == jsonData[j]["option_text"]){
                     options[i].id = jsonData[j]["option_id"];
+                    options[i].image_url = jsonData[j]["question_image"];
+                    options[i].audio_url = jsonData[j]["question_audio"];
                 }
             }
         }
     }
 
     void AssignDynamicQuestionIds(JSONNode jsonData, DynamicQA dynamicQA){
-        for(int i=0; i<dynamicQA.questions.Length; i++){
-            for(int j=0; j<jsonData.Count; j++){
-                if(dynamicQA.questions[i].question.text == jsonData[j]["question_text"]){
-                    // Debug.Log("-------> "+dynamicQA.questions[i].question.text);
-                    dynamicQA.questions[i].question.id = jsonData[j]["question_id"];
-                    // Debug.Log("Ques ID --> "+dynamicQA.questions[i].question.id+",  "+jsonData[j]["question_id"]);
-                    AssignDynamicOptionIds(jsonData[j]["options"], dynamicQA.questions[i].options);
-                }
+        for(int i=0; i<jsonData.Count; i++){
+            int qIndex = Int32.Parse(jsonData[i]["question_flow_no"]) - 1;
+            dynamicQA.questions[qIndex].question.id = jsonData[i]["question_id"];
+            dynamicQA.questions[qIndex].question.image_url = jsonData[i]["question_image"];
+            dynamicQA.questions[qIndex].question.audio_url = jsonData[i]["question_audio"];
+            AssignDynamicOptionIds(jsonData[i]["options"], dynamicQA.questions[qIndex].options);
+        }
+    }
+
+    void AssignStaticQAWithSubQues(JSONNode jsonData, StaticQAWithSubQues staticQAWithSubQues){
+        for(int i=0; i<staticQAWithSubQues.qaWithSubQuestion.Count; i++){
+            StaticQASubQues staticQA = staticQAWithSubQues.qaWithSubQuestion[i];
+
+            if(staticQA.mainQues.text == jsonData[i]["main_ques"]["text"]){
+                staticQA.mainQues.id = jsonData[i]["main_ques"]["id"];
+            }
+
+            for(int j=0; j<staticQA.staticSubQA.questions.Length; j++){
+                staticQA.staticSubQA.questions[j].question.id = jsonData[i]["questions"][j]["question_id"];
+            }
+
+            for(int z=0; z<staticQA.staticSubQA.options.Length; z++){
+                staticQA.staticSubQA.options[z].id = jsonData[i]["options"][z]["option_id"];
             }
         }
     }
+#endregion
 
 #region EXTERNAL_JS_INVOKE_FUNCTIONS
 
@@ -137,17 +175,22 @@ public class BlendedOperations : MonoBehaviour
     }
 
     public void JS_CALL_GetActivityScoreData(){
+        childChanged?.Invoke();
         string scoreData = ScoreManager.instance.GetActivityData();
         bridge.SendActivityScoreData(scoreData);
         ScoreManager.instance.ResetActivityData();
     }
 
     public void JS_CALL_GetActivityContentData(){
-        // string filePath = "ActivityContent.txt";
         string activityOerallData = ActivityContentManager.instance.GetOverallData();
-        // using(StreamWriter writer = new StreamWriter(filePath)){
-        //     writer.WriteLine(activityOerallData);
-        // }
+#if UNITY_EDITOR
+        if(Application.isEditor){
+            string filePath = "ActivityContent.txt";
+            using(StreamWriter writer = new StreamWriter(filePath)){
+                writer.WriteLine(activityOerallData);
+            }
+        }
+#endif
         bridge.PassActivityOverallContent(activityOerallData);
     }
 
@@ -159,12 +202,9 @@ public class BlendedOperations : MonoBehaviour
         // }
         string qaData = "";
         if(activityContents.Count > 0){
-            // Debug.Log("if part");
             qaData = activityContents[0].GetData();
-            // Debug.Log(qaData);
             bridge.PassQAData(qaData);
         }else{
-            // Debug.Log("else part");
             bridge.PassQAData(qaData);
         }
         // return activityContents[0].GetData();
@@ -184,7 +224,11 @@ public class BlendedOperations : MonoBehaviour
                     if(activityContent.questionType == QuestionType.Dynamic){
                         AssignDynamicQuestionIds(jsonData[i]["questions"], activityContent.dynamicQA);
                     }else if(activityContent.questionType == QuestionType.Static){
-                        AssignStaticQuestionsIds(jsonData[i]["questions"], jsonData[i]["options"], activityContent.staticQA);
+                        if(activityContent.hasSubquestion){
+                            AssignStaticQAWithSubQues(jsonData[i]["qao"], activityContent.staticQAWithSQ);
+                        }
+                        else    
+                            AssignStaticQuestionsIds(jsonData[i]["questions"], jsonData[i]["options"], activityContent.staticQA);
                     }
                     break;
                 }
@@ -192,6 +236,19 @@ public class BlendedOperations : MonoBehaviour
         }
     }
 
+    public void JS_CALL_VideoPlayAtPlayBackSpeed(string playbackSpeed){
+        float fPlayBackSpeed = float.Parse(playbackSpeed);
+        VideoPlayer[] videoProgressBars = FindObjectsOfType(typeof(VideoPlayer)) as VideoPlayer[];
+        foreach (var vp in videoProgressBars)
+        {
+            vp.playbackSpeed = fPlayBackSpeed;
+        }
+    }
+
+    public void JS_CALL_ScoreDataDisplayAll()
+    {
+        Debug.Log($"{ScoreManager.instance.GetActivityDataForDebug()}");
+    }
     public void JS_CALL_CheckFunc(){
         Debug.Log($"In BlendedOperations CheckFunc");
     }
@@ -258,4 +315,29 @@ public class BlendedOperations : MonoBehaviour
 
 #endregion
 
+#region PATCH_WORKS
+
+    // Function called from JS dont change the name it is used in blended session 
+    public void BUT_reset(){
+        ScoreManager.instance.ResetActivityData();
+    }
+
+    public void SetQAActivityDataID(string lesson_id){
+        StartCoroutine(GET_Blended_ID(lesson_id));
+    }
+
+    IEnumerator GET_Blended_ID(string lesson_id){
+        string URL ="https://dlearners.in/template_and_games/Blended_session_apis/get_blended_question_options.php";
+
+        WWWForm form = new WWWForm();
+        form.AddField("lesson_id", lesson_id);
+        UnityWebRequest www = UnityWebRequest.Post(URL, form);
+        yield return www.SendWebRequest();
+
+        if (!www.isNetworkError){
+            JS_CALL_SetQAActivity(www.downloadHandler.text);
+        }
+    }
+
+#endregion
 }

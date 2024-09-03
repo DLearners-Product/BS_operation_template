@@ -36,6 +36,10 @@ mergeInto(LibraryManager.library, {
 
     SendOverallActivityContentData : function(contentData){
         GetActivityContentData(UTF8ToString(contentData));
+    },
+
+    NotifyVideoCompleted : function(){
+        VideoBtnToogle();
     }
 
 });

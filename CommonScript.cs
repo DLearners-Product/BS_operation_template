@@ -27,12 +27,22 @@ public class Slide{
     public string slideName;
     public string teacherInstruction;
     public string activityInstruction;
+    public ActivityType activityType;
     public bool HAS_VIDEO,
                 HAS_WORKSHEET,
                 HAS_SYLLABLE,
                 HAS_GRAMMER,
                 HAS_ACTIVITY,
                 IS_MANUAL_ACTIVITY;
+
+    public bool IsManualActivity(){
+        if(IS_MANUAL_ACTIVITY) return true;
+        return activityType == ActivityType.ManualActivity;
+    }
+
+    public bool IsExceptionalActivity(){
+        return activityType == ActivityType.ExceptionalActivity;
+    }
 }
 
 [Serializable]
@@ -71,23 +81,66 @@ public class SlideActivityData{
     public int failures = 0;
     public int score = 0;
     public string answer;
+    public bool answerAnalysis;
+    List<SlideActivityData> logs;
 
     public SlideActivityData(int qNo){
+        this.answerAnalysis = false;
         this.questionID = qNo;
+        logs = new List<SlideActivityData>();
     }
 
     public SlideActivityData(int qNo, string question){
         this.questionID = qNo;
         this.question = question;
+        logs = new List<SlideActivityData>();
     }
 
-    public string getParsedJsonData(){
-        return JsonUtility.ToJson(this);
+    SlideActivityData(string questionSTR, int qID, int answerID, int tries, int failures, int score, string answer, bool analysis){
+        this.question = questionSTR;
+        this.questionID = qID;
+        this.answerID = answerID;
+        this.tries = tries;
+        this.failures = failures;
+        this.score = score;
+        this.answer = answer;
+        this.answerAnalysis = analysis;
     }
 
-    // return true if object is empty
-    public bool isEmpty(){
+    public string GetParsedJsonData(){
+        string slideActivityData = "{";
+
+        slideActivityData += $"\"question\": \"{question}\", \"questionID\": {questionID}, \"answerID\": {answerID}, \"tries\": {tries}, \"failures\": {failures}, \"score\": {score}, \"answer\": \"{answer}\", \"isCorrect\": ";
+
+        slideActivityData += (answerAnalysis) ? "true" : "false";
+        slideActivityData += ", \"isValid\": true";
+
+        if(logs != null && logs.Count > 0){
+            slideActivityData += ", \"logs\": [";
+            for (int i = 0; i < logs.Count; i++)
+            {
+                slideActivityData += logs[i].GetParsedJsonData();
+                if((i+1) < logs.Count){
+                    slideActivityData += ", ";
+                }
+            }
+            slideActivityData += "]";
+        }
+
+        slideActivityData += "}";
+
+        return slideActivityData;
+    }
+
+    // return true if object is empty (ie., object is considered empty when score, failures and tries are valued 0 and below)
+    public bool IsEmpty(){
         return this.score <= 0 && this.failures <= 0 && this.tries <= 0;
+    }
+
+    public void AppendLog(){
+        if(this.IsEmpty()) return;
+
+        logs.Add(new SlideActivityData(this.question, this.questionID, this.answerID, this.tries, this.failures, this.score, this.answer, this.answerAnalysis));
     }
 }
 
@@ -109,6 +162,13 @@ public enum QuestionType{
     Dynamic
 }
 
+public enum ActivityType{
+    None,
+    ManualActivity,
+    TimerActivity,
+    ExceptionalActivity
+}
+
 #region GROUP_IMAGE
 
 [Serializable]
@@ -118,6 +178,7 @@ public class Component{
     public Sprite _sprite;
     public Texture2D texture2D;
     public AudioClip audioClip;
+    public string image_url, audio_url;
     int width, height;
     float[] audioData;
     int _aduioSample, _audioChannel, _audioFrequency;
@@ -267,7 +328,10 @@ public class Component{
 
     public string GetComponentStringfyData(){
         string responseData = "{";
-        responseData += $"\"id\":{id}, \"text\":\"{text}\", \"image\":\"{textureBS64Text}\", \"image-width\":\"{width}\", \"image-height\":\"{height}\", \"audio\":\"{GetAudioBS64()}\"";
+        if(image_url == "" && audio_url == "")
+            responseData += $"\"id\":{id}, \"text\":\"{text}\", \"image\":\"{textureBS64Text}\", \"image-width\":\"{width}\", \"image-height\":\"{height}\", \"audio\":\"{GetAudioBS64()}\"";
+        else
+            responseData += $"\"id\":{id}, \"text\":\"{text}\", \"image\":\"{image_url}\", \"image-width\":\"{width}\", \"image-height\":\"{height}\", \"audio\":\"{audio_url}\"";
         responseData +="}";
         return responseData;
     }
@@ -279,3 +343,4 @@ public class OptionComponent : Component{
 }
 
 #endregion
+
