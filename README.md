@@ -1,6 +1,7 @@
 # Blended Integration SOP
 
-**Note : Before Integration all Development, bugfixes and changes should be done.**
+>[!NOTE]  
+>**Before Integration all Development, bugfixes and changes should be done.**
 
 Clone Blended Template using following command:
 
@@ -64,7 +65,8 @@ To push BlendedTemplate to repository
 
 # How to clone (if integration done) :
 
-Note : To Perform this action kindly ensure [Push integration to repository](#push-integration-to-repository) is done.
+>[!IMPORTANT]  
+>To Perform this action kindly ensure [Push integration to repository](#push-integration-to-repository) is done.
 
   - Clone repository switch to **DESIGNATED BRANCH** in which integration is done and pushed.
   - And then run following command in root of the project.  
