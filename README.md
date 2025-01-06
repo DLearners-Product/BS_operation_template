@@ -64,7 +64,7 @@ To push BlendedTemplate to repository
 
 # How to clone (if integration done) :
 
-Note : To Perform this action kindly ensure [Push integration to repository](#markdown-header-push-integration-to-repository) is done.
+Note : To Perform this action kindly ensure [Push integration to repository](#push-integration-to-repository) is done.
 
   - Clone repository switch to **DESIGNATED BRANCH** in which integration is done and pushed.
   - And then run following command in root of the project.  
