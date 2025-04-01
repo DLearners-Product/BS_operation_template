@@ -5,9 +5,9 @@
 
 Clone Blended Template using following command:
 
-``
-git submodule add https://github.com/DLearners-Product/BS_operation_template.git Assets/BlendedTemplate/
-``
+##
+    git submodule add https://github.com/DLearners-Product/BS_operation_template.git Assets/BlendedTemplate/
+
 
 make sure project in following folder structre:
 
