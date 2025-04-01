@@ -48,8 +48,8 @@ This script contains all activity Questions, Options and datatypes.
 
 ### Main_Blended.cs
   - At `THI_cloneLevels()` change the slide instantiate method to
- 
-      ```var currentLevel = Instantiate(MainBlendedData.instance.slideDatas[levelno].slideObject);```
+      ##
+          var currentLevel = Instantiate(MainBlendedData.instance.slideDatas[levelno].slideObject);
   - Change B_pause to access modifier public.
 
 # Push integration to repository:
@@ -71,7 +71,8 @@ To push BlendedTemplate to repository
   - Clone repository switch to **DESIGNATED BRANCH** in which integration is done and pushed.
   - And then run following command in root of the project.  
 
-    ``git submodule update --init --recursive``
+    ##
+        git submodule update --init --recursive
 
   - All the integration changes will get reflected along with meta files.
   - If needed you can navigate to `Assets/BlendedTemplate/` directory and switch to branch which named in main repo.
